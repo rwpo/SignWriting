@@ -67,6 +67,28 @@
       user-select: none;
     }
 
+    /* Estilos das letras selecionadas e encontradas no Caça-Palavras */
+    .ws-cell-selected {
+      background-color: #fde047 !important; /* Amarelo alegre */
+      color: #0f172a !important;
+      transform: scale(1.05);
+      border-color: #eab308 !important;
+    }
+
+    .ws-cell-found {
+      background-color: #4ade80 !important; /* Verde Sucesso */
+      color: #064e3b !important;
+      font-weight: 900 !important;
+      border-color: #16a34a !important;
+      animation: pulseCell 0.4s ease-in-out;
+    }
+
+    @keyframes pulseCell {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.15); }
+      100% { transform: scale(1); }
+    }
+
     .card-flip {
       perspective: 1000px;
     }
@@ -221,7 +243,7 @@
               <i class="fa-solid fa-border-all"></i>
             </div>
             <h4 class="text-xl font-bold text-slate-800 mb-2">Caça-Palavras em Sinais</h4>
-            <p class="text-slate-500 text-sm mb-4">Encontre as palavras em SignWriting escondidas na grade do jogo.</p>
+            <p class="text-slate-500 text-sm mb-4">Encontre as palavras em SignWriting escondidas na grade do jogo com feedback verde instantâneo.</p>
             <span class="text-amber-600 font-bold text-sm flex items-center gap-1">Jogar Agora <i class="fa-solid fa-arrow-right text-xs"></i></span>
           </div>
 
@@ -337,7 +359,7 @@
               <div id="trans-linha-3" class="font-signwriting text-3xl md:text-4xl text-yellow-300 tracking-wide text-center leading-relaxed">...</div>
             </div>
           </div>
-          <p class="text-xs text-emerald-300/80 text-center italic">Dica: Observe os sinais e digite a frase completa no campo ao lado.</p>
+          <p class="text-xs text-emerald-300/80 text-center italic">Dica: Pontuação e acentuação não são cobradas estritamente na verificação.</p>
         </div>
 
         <div class="bg-white rounded-3xl p-6 md:p-8 border border-emerald-100 shadow-md flex flex-col justify-between space-y-4">
@@ -362,15 +384,20 @@
           <h2 class="text-2xl font-bold text-slate-800 flex items-center gap-2">
             <i class="fa-solid fa-border-all text-amber-600"></i> Caça-Palavras em SignWriting
           </h2>
-          <p class="text-slate-500 text-sm">Encontre na grade as palavras listadas ao lado.</p>
+          <p class="text-slate-500 text-sm">Clique/selecione as letras na grade para marcar as palavras encontradas em SignWriting.</p>
         </div>
-        <button onclick="gerarCacaPalavras()" class="bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold px-4 py-2 rounded-xl shadow transition-all flex items-center gap-2">
-          <i class="fa-solid fa-rotate-right"></i> Gerar Novo Jogo
-        </button>
+        <div class="flex items-center gap-2">
+          <button onclick="limparSelecaoCacaPalavras()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-3 py-2 rounded-xl text-xs transition-all flex items-center gap-1">
+            <i class="fa-solid fa-eraser"></i> Limpar Seleção
+          </button>
+          <button onclick="gerarCacaPalavras()" class="bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold px-4 py-2 rounded-xl shadow transition-all flex items-center gap-2 text-sm">
+            <i class="fa-solid fa-rotate-right"></i> Gerar Novo Jogo
+          </button>
+        </div>
       </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div class="lg:col-span-2 bg-white rounded-3xl p-6 border border-emerald-100 shadow-md flex justify-center items-center overflow-x-auto">
+        <div class="lg:col-span-2 bg-white rounded-3xl p-6 border border-emerald-100 shadow-md flex flex-col justify-center items-center overflow-x-auto">
           <div id="ws-grid-container" class="wordsearch-grid"></div>
         </div>
 
@@ -382,7 +409,7 @@
           <ul id="ws-lista-palavras" class="space-y-2 max-h-[380px] overflow-y-auto pr-1"></ul>
           <div class="pt-2 border-t">
             <button onclick="revelarDicaCacaPalavras()" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-2 rounded-xl text-xs flex items-center justify-center gap-2">
-              <i class="fa-solid fa-lightbulb text-amber-500"></i> Dica de Palavra
+              <i class="fa-solid fa-lightbulb text-amber-500"></i> Revelar Dica
             </button>
           </div>
         </div>
@@ -808,13 +835,21 @@
     function verificarTranscricao() {
       if (!textoTranscricaoAtual) return;
 
-      const digitado = document.getElementById('input-transcricao').value.trim().toLowerCase();
-      const esperado = textoTranscricaoAtual.traducao.toLowerCase();
+      const digitado = document.getElementById('input-transcricao').value.trim();
+      const esperado = textoTranscricaoAtual.traducao;
 
-      const normalizar = (str) => str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"").toLowerCase();
+      const normalizarSemPontuacaoEAcentos = (str) => {
+        return str
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "")
+          .replace(/[.,\/#!$%\^&\*;:{}=\-_`~()?"'’]/g, "")
+          .replace(/\s+/g, " ")
+          .trim()
+          .toLowerCase();
+      };
 
-      const digitadoNorm = normalizar(digitado);
-      const esperadoNorm = normalizar(esperado);
+      const digitadoNorm = normalizarSemPontuacaoEAcentos(digitado);
+      const esperadoNorm = normalizarSemPontuacaoEAcentos(esperado);
 
       const feedback = document.getElementById('feedback-transcricao');
       feedback.classList.remove('hidden');
@@ -834,59 +869,93 @@
         feedback.className = "p-4 rounded-2xl border bg-amber-50 text-amber-900 border-amber-300";
         feedback.innerHTML = `
           <div class="flex items-center gap-2 font-black text-lg mb-1">
-            <i class="fa-solid fa-circle-info text-amber-600"></i> Quase lá! Veja a resposta esperada:
+            <i class="fa-solid fa-circle-info text-amber-600"></i> Quase lá! Veja o texto esperado:
           </div>
           <p class="mt-1 font-bold text-slate-800">"${textoTranscricaoAtual.traducao}"</p>
-          <p class="text-xs text-slate-500 mt-2">Revise a ortografia e tente novamente!</p>
+          <p class="text-xs text-slate-500 mt-2">Dica: Verifique se não esqueceu nenhuma palavra da frase!</p>
         `;
       }
     }
 
+    /* ==========================================================================
+       MÓDULO: CAÇA-PALAVRAS COM VALIDAÇÃO E FEEDBACK VISUAL EM VERDE
+       ========================================================================== */
     let gridCacaPalavras = [];
     let palavrasCacaPalavras = [];
-    let palavrasEncontradas = 0;
+    let selecaoAtual = []; // Guarda objetos {r, c, char}
+    let celulasEncontradas = new Set(); // Guarda "r,c" de palavras já achadas
+    let palavrasEncontradasQtd = 0;
 
     function gerarCacaPalavras() {
       const tamanho = nivelDificuldade === 'facil' ? 8 : nivelDificuldade === 'medio' ? 10 : 12;
-      const qtdPalavras = nivelDificuldade === 'facil' ? 4 : nivelDificuldade === 'medio' ? 6 : 8;
+      const qtdDesejada = nivelDificuldade === 'facil' ? 4 : nivelDificuldade === 'medio' ? 6 : 8;
 
-      palavrasCacaPalavras = [...BANCO_PALAVRAS].sort(() => 0.5 - Math.random()).slice(0, qtdPalavras);
-      palavrasEncontradas = 0;
+      let candidatos = [...BANCO_PALAVRAS]
+        .filter(p => p.palavra.length <= tamanho)
+        .sort(() => 0.5 - Math.random());
 
       gridCacaPalavras = Array(tamanho).fill(null).map(() => Array(tamanho).fill(''));
+      palavrasCacaPalavras = [];
+      selecaoAtual = [];
+      celulasEncontradas.clear();
+      palavrasEncontradasQtd = 0;
 
-      palavrasCacaPalavras.forEach(item => {
+      // Direções: Horizontal, Vertical, Diagonal Descendente
+      const direcoes = [
+        { dr: 0, dc: 1 },
+        { dr: 1, dc: 0 },
+        { dr: 1, dc: 1 }
+      ];
+
+      candidatos.forEach(item => {
+        if (palavrasCacaPalavras.length >= qtdDesejada) return;
+
+        const palavra = item.palavra.toLowerCase();
         let inserido = false;
         let tentativas = 0;
-        const palavra = item.palavra.toLowerCase();
 
-        while (!inserido && tentativas < 100) {
+        while (!inserido && tentativas < 150) {
           tentativas++;
-          const horiz = Math.random() > 0.5;
-          const linha = Math.floor(Math.random() * (horiz ? tamanho : tamanho - palavra.length));
-          const col = Math.floor(Math.random() * (horiz ? tamanho - palavra.length : tamanho));
+          const dir = direcoes[Math.floor(Math.random() * direcoes.length)];
+          const maxLin = tamanho - (dir.dr * palavra.length);
+          const maxCol = tamanho - (dir.dc * palavra.length);
+
+          if (maxLin < 0 || maxCol < 0) continue;
+
+          const linInicio = Math.floor(Math.random() * (maxLin + 1));
+          const colInicio = Math.floor(Math.random() * (maxCol + 1));
 
           let podeInserir = true;
+          let celulasPalavra = [];
+
           for (let i = 0; i < palavra.length; i++) {
-            const r = horiz ? linha : linha + i;
-            const c = horiz ? col + i : col;
+            const r = linInicio + (dir.dr * i);
+            const c = colInicio + (dir.dc * i);
+
             if (gridCacaPalavras[r][c] !== '' && gridCacaPalavras[r][c] !== palavra[i]) {
               podeInserir = false;
               break;
             }
+            celulasPalavra.push({ r, c });
           }
 
           if (podeInserir) {
             for (let i = 0; i < palavra.length; i++) {
-              const r = horiz ? linha : linha + i;
-              const c = horiz ? col + i : col;
+              const r = celulasPalavra[i].r;
+              const c = celulasPalavra[i].c;
               gridCacaPalavras[r][c] = palavra[i];
             }
+            palavrasCacaPalavras.push({
+              ...item,
+              coords: celulasPalavra,
+              encontrada: false
+            });
             inserido = true;
           }
         }
       });
 
+      // Preenche lacunas com letras aleatórias
       const letras = "abcdefghijklmnopqrstuvwxyz";
       for (let r = 0; r < tamanho; r++) {
         for (let c = 0; c < tamanho; c++) {
@@ -910,9 +979,17 @@
         for (let c = 0; c < tamanho; c++) {
           const char = gridCacaPalavras[r][c];
           const btn = document.createElement('button');
-          btn.className = "w-8 h-8 sm:w-10 sm:h-10 bg-slate-100 border border-slate-200 rounded-lg font-signwriting text-lg sm:text-2xl hover:bg-amber-100 flex items-center justify-center transition-colors";
+          btn.className = "w-8 h-8 sm:w-10 sm:h-10 bg-slate-100 border border-slate-200 rounded-lg font-signwriting text-lg sm:text-2xl hover:bg-amber-100 flex items-center justify-center transition-all";
           btn.textContent = char;
-          btn.onclick = () => clicarLetraCacaPalavras(btn);
+          btn.dataset.row = r;
+          btn.dataset.col = c;
+          btn.id = `ws-cell-${r}-${c}`;
+
+          if (celulasEncontradas.has(`${r},${c}`)) {
+            btn.classList.add('ws-cell-found');
+          }
+
+          btn.onclick = () => clicarLetraCacaPalavras(r, c, char, btn);
           container.appendChild(btn);
         }
       }
@@ -921,10 +998,13 @@
       listaUl.innerHTML = '';
       palavrasCacaPalavras.forEach((p, idx) => {
         const li = document.createElement('li');
-        li.className = "flex items-center justify-between p-2.5 bg-slate-50 border border-slate-200 rounded-xl font-bold text-sm text-slate-700";
+        li.id = `ws-item-${idx}`;
+        li.className = `flex items-center justify-between p-2.5 rounded-xl font-bold text-sm transition-all border ${
+          p.encontrada ? 'bg-emerald-100 border-emerald-300 text-emerald-800 line-through' : 'bg-slate-50 border-slate-200 text-slate-700'
+        }`;
         li.innerHTML = `
-          <span>${p.palavra} ${p.emoji}</span>
-          <span class="font-signwriting text-lg text-emerald-600">${p.palavra}</span>
+          <span>${p.palavra.toUpperCase()} ${p.emoji}</span>
+          <span class="font-signwriting text-lg ${p.encontrada ? 'text-emerald-700' : 'text-emerald-600'}">${p.palavra}</span>
         `;
         listaUl.appendChild(li);
       });
@@ -932,20 +1012,91 @@
       atualizarProgressoCacaPalavras();
     }
 
-    function clicarLetraCacaPalavras(btn) {
+    function clicarLetraCacaPalavras(r, c, char, btnElemento) {
       tocarSom('clique');
-      btn.classList.toggle('bg-amber-400');
-      btn.classList.toggle('text-slate-950');
+
+      const jaSelecionadaIndex = selecaoAtual.findIndex(sel => sel.r === r && sel.c === c);
+
+      if (jaSelecionadaIndex >= 0) {
+        selecaoAtual.splice(jaSelecionadaIndex, 1);
+        btnElemento.classList.remove('ws-cell-selected');
+      } else {
+        selecaoAtual.push({ r, c, char });
+        btnElemento.classList.add('ws-cell-selected');
+      }
+
+      validarSelecaoCacaPalavras();
+    }
+
+    function validarSelecaoCacaPalavras() {
+      if (selecaoAtual.length === 0) return;
+
+      const textoSelecionado = selecaoAtual.map(s => s.char).join('');
+      const textoInvertido = textoSelecionado.split('').reverse().join('');
+
+      palavrasCacaPalavras.forEach((item, idx) => {
+        if (item.encontrada) return;
+
+        if (item.palavra.toLowerCase() === textoSelecionado || item.palavra.toLowerCase() === textoInvertido) {
+          tocarSom('acerto');
+          item.encontrada = true;
+          palavrasEncontradasQtd++;
+
+          // Destacar células em verde permanente
+          selecaoAtual.forEach(sel => {
+            celulasEncontradas.add(`${sel.r},${sel.c}`);
+            const celulaBtn = document.getElementById(`ws-cell-${sel.r}-${sel.c}`);
+            if (celulaBtn) {
+              celulaBtn.classList.remove('ws-cell-selected');
+              celulaBtn.classList.add('ws-cell-found');
+            }
+          });
+
+          selecaoAtual = [];
+          adicionarPontos(20);
+
+          // Atualizar elemento na lista lateral
+          const itemLi = document.getElementById(`ws-item-${idx}`);
+          if (itemLi) {
+            itemLi.className = "flex items-center justify-between p-2.5 rounded-xl font-bold text-sm transition-all border bg-emerald-100 border-emerald-300 text-emerald-800 line-through animate-pulse";
+          }
+
+          atualizarProgressoCacaPalavras();
+
+          if (palavrasEncontradasQtd === palavrasCacaPalavras.length) {
+            setTimeout(() => {
+              alert("🎉 Parabéns! Você encontrou TODAS as palavras em SignWriting!");
+            }, 500);
+          }
+        }
+      });
+    }
+
+    function limparSelecaoCacaPalavras() {
+      selecaoAtual.forEach(sel => {
+        const celulaBtn = document.getElementById(`ws-cell-${sel.r}-${sel.c}`);
+        if (celulaBtn && !celulasEncontradas.has(`${sel.r},${sel.c}`)) {
+          celulaBtn.classList.remove('ws-cell-selected');
+        }
+      });
+      selecaoAtual = [];
     }
 
     function revelarDicaCacaPalavras() {
-      if (palavrasCacaPalavras.length > 0) {
-        alert(`Dica: Procure pela palavra "${palavrasCacaPalavras[0].palavra.toUpperCase()}" na grade.`);
+      const naoEncontrada = palavrasCacaPalavras.find(p => !p.encontrada);
+      if (naoEncontrada) {
+        const primeiraCoord = naoEncontrada.coords[0];
+        const btn = document.getElementById(`ws-cell-${primeiraCoord.r}-${primeiraCoord.c}`);
+        if (btn) {
+          btn.classList.add('animate-bounce', 'bg-yellow-300');
+          setTimeout(() => btn.classList.remove('animate-bounce', 'bg-yellow-300'), 2000);
+        }
+        alert(`Dica: A palavra "${naoEncontrada.palavra.toUpperCase()}" começa com a letra '${naoEncontrada.palavra[0].toUpperCase()}'.`);
       }
     }
 
     function atualizarProgressoCacaPalavras() {
-      document.getElementById('ws-progresso').textContent = `${palavrasEncontradas} / ${palavrasCacaPalavras.length}`;
+      document.getElementById('ws-progresso').textContent = `${palavrasEncontradasQtd} / ${palavrasCacaPalavras.length}`;
     }
 
     let quizPerguntas = [];
