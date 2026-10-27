@@ -167,13 +167,12 @@
 
     <!-- SEÇÃO: INÍCIO / PAINEL -->
     <section id="sec-home" class="aba-conteudo space-y-8">
-      <!-- Banner de Boas-Vindas -->
       <div class="bg-gradient-to-r from-emerald-500 to-teal-600 rounded-3xl p-6 md:p-10 text-white shadow-xl relative overflow-hidden">
         <div class="absolute -right-10 -bottom-10 opacity-20 text-9xl font-black pointer-events-none">
           <i class="fa-solid fa-hands-asl-interpreting"></i>
         </div>
         <div class="max-w-2xl relative z-10 space-y-4">
-          <span class="bg-white/20 backdrop-blur-md text-emerald-100 font-bold px-3 py-1 rounded-full text-xs uppercase tracking-wider">
+          <span class="bg-white/25 backdrop-blur-md text-emerald-100 font-bold px-3 py-1 rounded-full text-xs uppercase tracking-wider">
             Plataforma Educativa de SignWriting
           </span>
           <h2 class="text-3xl md:text-5xl font-black leading-tight">
@@ -193,15 +192,12 @@
         </div>
       </div>
 
-      <!-- Grade de Atividades -->
       <div>
         <h3 class="text-2xl font-bold text-slate-800 mb-6 flex items-center gap-2">
           <i class="fa-solid fa-gamepad text-emerald-600"></i> Escolha uma Atividade
         </h3>
         
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          
-          <!-- Card Flashcards -->
           <div onclick="trocarAba('flashcards')" class="group bg-white rounded-3xl p-6 border border-emerald-100 shadow-md hover:shadow-xl transition-all cursor-pointer hover:-translate-y-1 relative overflow-hidden">
             <div class="w-14 h-14 bg-indigo-100 text-indigo-600 rounded-2xl flex items-center justify-center text-2xl font-bold mb-4 group-hover:scale-110 transition-transform">
               <i class="fa-solid fa-chalkboard-user"></i>
@@ -211,7 +207,6 @@
             <span class="text-indigo-600 font-bold text-sm flex items-center gap-1">Projetar Agora <i class="fa-solid fa-arrow-right text-xs"></i></span>
           </div>
 
-          <!-- Card Transcrição -->
           <div onclick="trocarAba('transcricao')" class="group bg-white rounded-3xl p-6 border border-emerald-100 shadow-md hover:shadow-xl transition-all cursor-pointer hover:-translate-y-1 relative overflow-hidden">
             <div class="w-14 h-14 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center text-2xl font-bold mb-4 group-hover:scale-110 transition-transform">
               <i class="fa-solid fa-file-signature"></i>
@@ -221,7 +216,6 @@
             <span class="text-emerald-600 font-bold text-sm flex items-center gap-1">Iniciar Leitura <i class="fa-solid fa-arrow-right text-xs"></i></span>
           </div>
 
-          <!-- Card Caça-Palavras -->
           <div onclick="trocarAba('caca-palavras')" class="group bg-white rounded-3xl p-6 border border-emerald-100 shadow-md hover:shadow-xl transition-all cursor-pointer hover:-translate-y-1 relative overflow-hidden">
             <div class="w-14 h-14 bg-amber-100 text-amber-600 rounded-2xl flex items-center justify-center text-2xl font-bold mb-4 group-hover:scale-110 transition-transform">
               <i class="fa-solid fa-border-all"></i>
@@ -231,7 +225,6 @@
             <span class="text-amber-600 font-bold text-sm flex items-center gap-1">Jogar Agora <i class="fa-solid fa-arrow-right text-xs"></i></span>
           </div>
 
-          <!-- Card Quiz Leitura -->
           <div onclick="trocarAba('quiz')" class="group bg-white rounded-3xl p-6 border border-emerald-100 shadow-md hover:shadow-xl transition-all cursor-pointer hover:-translate-y-1 relative overflow-hidden">
             <div class="w-14 h-14 bg-sky-100 text-sky-600 rounded-2xl flex items-center justify-center text-2xl font-bold mb-4 group-hover:scale-110 transition-transform">
               <i class="fa-solid fa-circle-question"></i>
@@ -241,7 +234,6 @@
             <span class="text-sky-600 font-bold text-sm flex items-center gap-1">Resolver Quiz <i class="fa-solid fa-arrow-right text-xs"></i></span>
           </div>
 
-          <!-- Card Escrita Viva -->
           <div onclick="trocarAba('escrita')" class="group bg-white rounded-3xl p-6 border border-emerald-100 shadow-md hover:shadow-xl transition-all cursor-pointer hover:-translate-y-1 relative overflow-hidden">
             <div class="w-14 h-14 bg-purple-100 text-purple-600 rounded-2xl flex items-center justify-center text-2xl font-bold mb-4 group-hover:scale-110 transition-transform">
               <i class="fa-solid fa-keyboard"></i>
@@ -251,7 +243,6 @@
             <span class="text-purple-600 font-bold text-sm flex items-center gap-1">Praticar Escrita <i class="fa-solid fa-arrow-right text-xs"></i></span>
           </div>
 
-          <!-- Card Jogo da Memória -->
           <div onclick="trocarAba('memoria')" class="group bg-white rounded-3xl p-6 border border-emerald-100 shadow-md hover:shadow-xl transition-all cursor-pointer hover:-translate-y-1 relative overflow-hidden">
             <div class="w-14 h-14 bg-rose-100 text-rose-600 rounded-2xl flex items-center justify-center text-2xl font-bold mb-4 group-hover:scale-110 transition-transform">
               <i class="fa-solid fa-brain"></i>
@@ -260,12 +251,11 @@
             <p class="text-slate-500 text-sm mb-4">Encontre os pares combinando a escrita em SignWriting com a palavra correspondente em Português.</p>
             <span class="text-rose-600 font-bold text-sm flex items-center gap-1">Combinar Pares <i class="fa-solid fa-arrow-right text-xs"></i></span>
           </div>
-
         </div>
       </div>
     </section>
 
-    <!-- SEÇÃO: FLASHCARDS (SALA DE AULA / LOUSA) -->
+    <!-- SEÇÃO: FLASHCARDS -->
     <section id="sec-flashcards" class="aba-conteudo hidden space-y-6">
       <div class="bg-white rounded-3xl p-6 border border-emerald-100 shadow-sm flex flex-wrap justify-between items-center gap-4">
         <div>
@@ -281,26 +271,20 @@
         </div>
       </div>
 
-      <!-- Lousa de Projeção -->
       <div class="bg-slate-900 rounded-3xl p-8 md:p-12 text-center text-white shadow-2xl relative min-h-[420px] flex flex-col items-center justify-center border-4 border-slate-800">
-        
-        <!-- Indicador de Categoria -->
         <span id="fc-categoria" class="absolute top-6 left-6 bg-slate-800 text-indigo-300 font-bold px-4 py-1.5 rounded-full text-xs uppercase tracking-wider border border-slate-700">
           Categoria
         </span>
-
         <span id="fc-contador" class="absolute top-6 right-6 bg-slate-800 text-slate-400 font-bold px-4 py-1.5 rounded-full text-xs">
           Card 1 de 10
         </span>
 
-        <!-- Conteúdo do Sinal Projetado -->
         <div class="my-8">
-          <div id="fc-sinal" class="font-signwriting text-7xl md:text-9xl tracking-wider text-yellow-300 drop-shadow-lg transition-transform duration-300 hover:scale-105 cursor-pointer" title="Clique para ampliar">
+          <div id="fc-sinal" class="font-signwriting text-7xl md:text-9xl tracking-wider text-yellow-300 drop-shadow-lg transition-transform duration-300 hover:scale-105 cursor-pointer">
             ...
           </div>
         </div>
 
-        <!-- Resposta Oculta (Revelável pelo Professor) -->
         <div id="fc-resposta-container" class="mt-4 transition-all">
           <button id="btn-revelar-resposta" onclick="revelarRespostaFlashcard()" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold px-6 py-3 rounded-2xl shadow-lg transition-transform hover:scale-105 flex items-center gap-2">
             <i class="fa-solid fa-eye"></i> Revelar Resposta para a Turma
@@ -312,7 +296,6 @@
           </div>
         </div>
 
-        <!-- Controles Inferiores -->
         <div class="mt-8 flex gap-4">
           <button onclick="proximoFlashcard(-1)" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-4 py-2 rounded-xl text-sm font-bold border border-slate-700">
             <i class="fa-solid fa-chevron-left"></i> Anterior
@@ -324,7 +307,7 @@
       </div>
     </section>
 
-    <!-- SEÇÃO: TRANSCRIÇÃO DE TEXTO (3 LINHAS) -->
+    <!-- SEÇÃO: TRANSCRIÇÃO DE TEXTO -->
     <section id="sec-transcricao" class="aba-conteudo hidden space-y-6">
       <div class="bg-white rounded-3xl p-6 border border-emerald-100 shadow-sm flex flex-wrap justify-between items-center gap-4">
         <div>
@@ -339,8 +322,6 @@
       </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        
-        <!-- Cartão do Texto em SignWriting -->
         <div class="bg-emerald-900 text-white rounded-3xl p-6 md:p-8 shadow-xl flex flex-col justify-between border-4 border-emerald-800">
           <div>
             <div class="flex justify-between items-center mb-4">
@@ -350,46 +331,27 @@
               <span id="trans-titulo" class="text-xs font-bold text-yellow-300">História 1</span>
             </div>
 
-            <!-- Caixa de Exibição das 3 Linhas em SignWriting -->
             <div class="bg-emerald-950/80 rounded-2xl p-6 border border-emerald-700/60 my-4 space-y-6">
-              <div id="trans-linha-1" class="font-signwriting text-3xl md:text-4xl text-yellow-300 tracking-wide text-center leading-relaxed">
-                ...
-              </div>
-              <div id="trans-linha-2" class="font-signwriting text-3xl md:text-4xl text-yellow-300 tracking-wide text-center leading-relaxed">
-                ...
-              </div>
-              <div id="trans-linha-3" class="font-signwriting text-3xl md:text-4xl text-yellow-300 tracking-wide text-center leading-relaxed">
-                ...
-              </div>
+              <div id="trans-linha-1" class="font-signwriting text-3xl md:text-4xl text-yellow-300 tracking-wide text-center leading-relaxed">...</div>
+              <div id="trans-linha-2" class="font-signwriting text-3xl md:text-4xl text-yellow-300 tracking-wide text-center leading-relaxed">...</div>
+              <div id="trans-linha-3" class="font-signwriting text-3xl md:text-4xl text-yellow-300 tracking-wide text-center leading-relaxed">...</div>
             </div>
           </div>
-
-          <p class="text-xs text-emerald-300/80 text-center italic">
-            Dica: Observe a pontuação e digite a frase completa no campo ao lado.
-          </p>
+          <p class="text-xs text-emerald-300/80 text-center italic">Dica: Observe os sinais e digite a frase completa no campo ao lado.</p>
         </div>
 
-        <!-- Área de Digitação e Verificação -->
         <div class="bg-white rounded-3xl p-6 md:p-8 border border-emerald-100 shadow-md flex flex-col justify-between space-y-4">
           <div class="space-y-4">
-            <label class="block font-bold text-slate-700 text-lg">
-              Sua Transcrição em Português:
-            </label>
+            <label class="block font-bold text-slate-700 text-lg">Sua Transcrição em Português:</label>
             <textarea id="input-transcricao" rows="5" class="w-full p-4 border-2 border-emerald-200 rounded-2xl focus:border-emerald-500 focus:ring-4 focus:ring-emerald-100 outline-none text-slate-800 font-semibold text-lg leading-relaxed placeholder:text-slate-300" placeholder="Digite aqui o que você leu no texto acima..."></textarea>
           </div>
-
           <div class="space-y-3">
             <button onclick="verificarTranscricao()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-lg py-4 rounded-2xl shadow-lg transition-transform active:scale-95 flex items-center justify-center gap-2">
               <i class="fa-solid fa-circle-check"></i> Verificar Minha Transcrição
             </button>
-
-            <!-- Painel de Feedback da Transcrição -->
-            <div id="feedback-transcricao" class="hidden p-4 rounded-2xl border text-sm font-semibold transition-all">
-              <!-- Conteúdo gerado via JS -->
-            </div>
+            <div id="feedback-transcricao" class="hidden p-4 rounded-2xl border text-sm font-semibold transition-all"></div>
           </div>
         </div>
-
       </div>
     </section>
 
@@ -408,32 +370,22 @@
       </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        
-        <!-- Matriz do Caça-Palavras -->
         <div class="lg:col-span-2 bg-white rounded-3xl p-6 border border-emerald-100 shadow-md flex justify-center items-center overflow-x-auto">
-          <div id="ws-grid-container" class="wordsearch-grid">
-            <!-- A grade será gerada via JS -->
-          </div>
+          <div id="ws-grid-container" class="wordsearch-grid"></div>
         </div>
 
-        <!-- Lista de Palavras a Encontrar -->
         <div class="bg-white rounded-3xl p-6 border border-emerald-100 shadow-md space-y-4">
           <h3 class="text-lg font-bold text-slate-800 border-b pb-2 flex items-center justify-between">
             <span>Palavras para Encontrar:</span>
             <span id="ws-progresso" class="text-xs bg-amber-100 text-amber-800 px-2.5 py-1 rounded-full font-bold">0 / 0</span>
           </h3>
-
-          <ul id="ws-lista-palavras" class="space-y-2 max-h-[380px] overflow-y-auto pr-1">
-            <!-- Lista de palavras gerada dinamicamente -->
-          </ul>
-
+          <ul id="ws-lista-palavras" class="space-y-2 max-h-[380px] overflow-y-auto pr-1"></ul>
           <div class="pt-2 border-t">
             <button onclick="revelarDicaCacaPalavras()" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-2 rounded-xl text-xs flex items-center justify-center gap-2">
               <i class="fa-solid fa-lightbulb text-amber-500"></i> Dica de Palavra
             </button>
           </div>
         </div>
-
       </div>
     </section>
 
@@ -452,26 +404,13 @@
       </div>
 
       <div class="max-w-3xl mx-auto bg-white rounded-3xl border border-emerald-100 shadow-xl overflow-hidden">
-        
-        <!-- Área de Exibição do Sinal -->
         <div class="bg-slate-900 p-8 text-center text-yellow-300 border-b border-slate-800 min-h-[220px] flex items-center justify-center">
-          <div id="quiz-sinal" class="font-signwriting text-7xl md:text-8xl tracking-widest drop-shadow-md">
-            ...
-          </div>
+          <div id="quiz-sinal" class="font-signwriting text-7xl md:text-8xl tracking-widest drop-shadow-md">...</div>
         </div>
-
-        <!-- Opções de Resposta -->
         <div class="p-6 md:p-8 space-y-4">
-          <div id="quiz-opcoes" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <!-- Botões das 4 opções gerados via JS -->
-          </div>
-
-          <!-- Feedback da Pergunta -->
-          <div id="quiz-feedback" class="hidden p-4 rounded-2xl text-center font-bold text-lg animate-bounce">
-            <!-- Mensagem de Acerto/Erro -->
-          </div>
+          <div id="quiz-opcoes" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
+          <div id="quiz-feedback" class="hidden p-4 rounded-2xl text-center font-bold text-lg animate-bounce"></div>
         </div>
-
       </div>
     </section>
 
@@ -485,39 +424,28 @@
       </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        
-        <!-- Entrada de Texto -->
         <div class="bg-white rounded-3xl p-6 border border-emerald-100 shadow-md space-y-4">
           <label class="block font-bold text-slate-700">Digite sua palavra ou frase em Português:</label>
           <input type="text" id="input-escrita-viva" oninput="atualizarEscritaViva()" placeholder="Digite aqui..." class="w-full p-4 border-2 border-emerald-200 rounded-2xl focus:border-emerald-500 focus:ring-4 focus:ring-emerald-100 outline-none text-slate-800 font-bold text-xl">
-
-          <!-- Atalhos Rápidos de Palavras -->
           <div>
             <span class="text-xs font-bold text-slate-400 block mb-2">Exemplos para Testar:</span>
-            <div class="flex flex-wrap gap-2" id="escrita-atalhos">
-              <!-- Gerado via JS -->
-            </div>
+            <div class="flex flex-wrap gap-2" id="escrita-atalhos"></div>
           </div>
         </div>
 
-        <!-- Saída da Fonte SignWriting -->
         <div class="bg-slate-900 text-yellow-300 rounded-3xl p-6 md:p-8 shadow-xl flex flex-col justify-between min-h-[260px]">
           <div>
             <span class="bg-slate-800 text-slate-400 font-bold px-3 py-1 rounded-full text-xs uppercase tracking-wider">
               Resultado em SignWriting
             </span>
-            <div id="output-escrita-viva" class="font-signwriting text-5xl md:text-6xl mt-6 tracking-wider break-words min-h-[100px]">
-              ...
-            </div>
+            <div id="output-escrita-viva" class="font-signwriting text-5xl md:text-6xl mt-6 tracking-wider break-words min-h-[100px]">...</div>
           </div>
-
           <div class="flex justify-end gap-2 pt-4 border-t border-slate-800">
             <button onclick="copiarTextoEscrita()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2">
               <i class="fa-solid fa-copy"></i> Copiar Texto
             </button>
           </div>
         </div>
-
       </div>
     </section>
 
@@ -535,23 +463,18 @@
         </button>
       </div>
 
-      <!-- Tabuleiro de Cartas -->
-      <div id="memoria-tabuleiro" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
-        <!-- Cartas geradas via JS -->
-      </div>
+      <div id="memoria-tabuleiro" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 max-w-4xl mx-auto"></div>
     </section>
 
-    <!-- SEÇÃO: DICIONÁRIO / ABECEDÁRIO -->
+    <!-- SEÇÃO: DICIONÁRIO -->
     <section id="sec-dicionario" class="aba-conteudo hidden space-y-6">
       <div class="bg-white rounded-3xl p-6 border border-emerald-100 shadow-sm flex flex-wrap justify-between items-center gap-4">
         <div>
           <h2 class="text-2xl font-bold text-slate-800 flex items-center gap-2">
-            <i class="fa-solid fa-book-bookmark text-emerald-600"></i> Dicionário e Vocabulário
+            <i class="fa-solid fa-book-bookmark text-emerald-600"></i> Dicionário e Vocabulário Visual
           </h2>
-          <p class="text-slate-500 text-sm">Consulte todas as palavras cadastradas e seus respectivos sinais na fonte Sutton BR.</p>
+          <p class="text-slate-500 text-sm">Consulte o vocabulário verificado com representação visual clara para os alunos.</p>
         </div>
-
-        <!-- Filtro por Categoria / Busca -->
         <div class="flex flex-wrap gap-2 w-full md:w-auto">
           <input type="text" id="busca-dicionario" oninput="filtrarDicionario()" placeholder="Buscar palavra..." class="px-4 py-2 border border-emerald-200 rounded-xl outline-none text-sm font-semibold">
           <select id="filtro-categoria" onchange="filtrarDicionario()" class="px-4 py-2 border border-emerald-200 rounded-xl outline-none text-sm font-bold bg-white">
@@ -560,15 +483,11 @@
         </div>
       </div>
 
-      <!-- Grade de Cards do Dicionário -->
-      <div id="grid-dicionario" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-        <!-- Cards de palavras gerados via JS -->
-      </div>
+      <div id="grid-dicionario" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4"></div>
     </section>
 
   </main>
 
-  <!-- Rodapé -->
   <footer class="bg-white border-t border-emerald-100 py-6 mt-12 text-center text-xs font-semibold text-slate-400">
     <div class="max-w-7xl mx-auto px-4 space-y-2">
       <p>SignWriting na prática &copy; Sistema Educativo de Leitura e Escrita de Sinais para Surdos</p>
@@ -579,7 +498,7 @@
   <!-- SCRIPT DA APLICAÇÃO -->
   <script>
     /* ==========================================================================
-       1. BANCO DE DADOS COMPLETO (~1000 PALAVRAS E TEXTOS)
+       BANCO DE DADOS 100% VISUAL E VERIFICADO (SEM ITENS GENÉRICOS)
        ========================================================================== */
     const BANCO_PALAVRAS = [
       // Animais
@@ -686,22 +605,6 @@
       { palavra: "carro", emoji: "🚗", categoria: "Transporte" }
     ];
 
-    // Gerador dinâmico de complemento até atingir ~1000 termos no dicionário
-    const PREFIXOS = ["super", "sub", "micro", "mega", "mini"];
-    const SUFIXOS = ["cao", "zito", "landia", "dor", "vel"];
-    
-    // Preenche com mais palavras geradas se necessário
-    if (BANCO_PALAVRAS.length < 100) {
-      for (let i = 1; i <= 900; i++) {
-        BANCO_PALAVRAS.push({
-          palavra: `palavra${i}`,
-          emoji: "💬",
-          categoria: "Geral"
-        });
-      }
-    }
-
-    // BANCO DE TEXTOS CURTOS (3 LINHAS CADA)
     const BANCO_TEXTOS_3_LINHAS = [
       {
         titulo: "O Gato e o Leite",
@@ -740,18 +643,12 @@
       }
     ];
 
-    /* ==========================================================================
-       2. ESTADO GLOBAL DA APLICAÇÃO
-       ========================================================================== */
     let pontuacaoGlobal = 0;
     let nivelDificuldade = "medio";
     let indexFlashcardAtual = 0;
     let flashcardsAleatorios = [];
     let textoTranscricaoAtual = null;
 
-    /* ==========================================================================
-       3. SINTETIZADOR DE SOM (WEB AUDIO API)
-       ========================================================================== */
     const AudioContext = window.AudioContext || window.webkitAudioContext;
     let audioCtx = null;
 
@@ -769,8 +666,8 @@
 
         if (tipo === 'acerto') {
           osc.type = 'triangle';
-          osc.frequency.setValueAtTime(523.25, agora); // C5
-          osc.frequency.exponentialRampToValueAtTime(880, agora + 0.3); // A5
+          osc.frequency.setValueAtTime(523.25, agora);
+          osc.frequency.exponentialRampToValueAtTime(880, agora + 0.3);
           gain.gain.setValueAtTime(0.3, agora);
           gain.gain.exponentialRampToValueAtTime(0.01, agora + 0.3);
           osc.start(agora);
@@ -792,13 +689,10 @@
           osc.stop(agora + 0.08);
         }
       } catch (e) {
-        console.warn('Efeito de áudio não suportado ou bloqueado.', e);
+        console.warn('Áudio não suportado.', e);
       }
     }
 
-    /* ==========================================================================
-       4. VERIFICAÇÃO AUTOMÁTICA DO CARREGAMENTO DA FONTE
-       ========================================================================== */
     async function verificarStatusFonte() {
       const badge = document.getElementById('badge-fonte');
       const textoStatus = document.getElementById('texto-status-fonte');
@@ -815,15 +709,11 @@
           textoStatus.textContent = 'Carregando Fonte...';
         }
       } catch (err) {
-        console.warn('Erro na verificação da fonte:', err);
         textoStatus.textContent = 'Fonte em Fallback';
         iconStatus.className = 'fa-solid fa-triangle-exclamation text-amber-400';
       }
     }
 
-    /* ==========================================================================
-       5. TROCA DE ABAS E NAVEGAÇÃO
-       ========================================================================== */
     function trocarAba(nomeAba) {
       tocarSom('clique');
       document.querySelectorAll('.aba-conteudo').forEach(el => el.classList.add('hidden'));
@@ -841,7 +731,6 @@
         btnNav.classList.remove('text-slate-600', 'hover:bg-emerald-50');
       }
 
-      // Inicializadores específicos de abas
       if (nomeAba === 'flashcards') prepararFlashcards();
       if (nomeAba === 'transcricao') carregarTextoTranscricao();
       if (nomeAba === 'caca-palavras') gerarCacaPalavras();
@@ -854,7 +743,6 @@
     function mudarDificuldade(val) {
       nivelDificuldade = val;
       tocarSom('clique');
-      // Atualizar atividades ativas
       if (!document.getElementById('sec-caca-palavras').classList.contains('hidden')) gerarCacaPalavras();
       if (!document.getElementById('sec-quiz').classList.contains('hidden')) iniciarQuiz();
     }
@@ -867,9 +755,6 @@
       } catch(e) {}
     }
 
-    /* ==========================================================================
-       6. MÓDULO: FLASHCARDS DE PROJEÇÃO
-       ========================================================================== */
     function prepararFlashcards() {
       flashcardsAleatorios = [...BANCO_PALAVRAS].sort(() => 0.5 - Math.random()).slice(0, 10);
       indexFlashcardAtual = 0;
@@ -881,12 +766,11 @@
       if (!item) return;
 
       document.getElementById('fc-sinal').textContent = item.palavra;
-      document.getElementById('fc-categoria').textContent = item.categoria || 'Sinais';
+      document.getElementById('fc-categoria').textContent = item.categoria;
       document.getElementById('fc-palavra').textContent = item.palavra.toUpperCase();
-      document.getElementById('fc-emoji').textContent = item.emoji || '🤟';
+      document.getElementById('fc-emoji').textContent = item.emoji;
       document.getElementById('fc-contador').textContent = `Card ${indexFlashcardAtual + 1} de ${flashcardsAleatorios.length}`;
 
-      // Ocultar resposta inicialmente
       document.getElementById('btn-revelar-resposta').classList.remove('hidden');
       document.getElementById('fc-resposta-revelada').classList.add('hidden');
     }
@@ -908,9 +792,6 @@
       prepararFlashcards();
     }
 
-    /* ==========================================================================
-       7. MÓDULO: TRANSCRIÇÃO DE TEXTO (3 LINHAS)
-       ========================================================================== */
     function carregarTextoTranscricao() {
       const idx = Math.floor(Math.random() * BANCO_TEXTOS_3_LINHAS.length);
       textoTranscricaoAtual = BANCO_TEXTOS_3_LINHAS[idx];
@@ -921,8 +802,7 @@
       document.getElementById('trans-linha-3').textContent = textoTranscricaoAtual.linha3;
 
       document.getElementById('input-transcricao').value = '';
-      const feedback = document.getElementById('feedback-transcricao');
-      feedback.classList.add('hidden');
+      document.getElementById('feedback-transcricao').classList.add('hidden');
     }
 
     function verificarTranscricao() {
@@ -931,7 +811,6 @@
       const digitado = document.getElementById('input-transcricao').value.trim().toLowerCase();
       const esperado = textoTranscricaoAtual.traducao.toLowerCase();
 
-      // Normalização simples para ignorar acentos/pontuação menor na comparação
       const normalizar = (str) => str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"").toLowerCase();
 
       const digitadoNorm = normalizar(digitado);
@@ -963,9 +842,6 @@
       }
     }
 
-    /* ==========================================================================
-       8. MÓDULO: CAÇA-PALAVRAS
-       ========================================================================== */
     let gridCacaPalavras = [];
     let palavrasCacaPalavras = [];
     let palavrasEncontradas = 0;
@@ -974,14 +850,11 @@
       const tamanho = nivelDificuldade === 'facil' ? 8 : nivelDificuldade === 'medio' ? 10 : 12;
       const qtdPalavras = nivelDificuldade === 'facil' ? 4 : nivelDificuldade === 'medio' ? 6 : 8;
 
-      // Seleciona palavras aleatórias do banco
       palavrasCacaPalavras = [...BANCO_PALAVRAS].sort(() => 0.5 - Math.random()).slice(0, qtdPalavras);
       palavrasEncontradas = 0;
 
-      // Inicializa grade vazia
       gridCacaPalavras = Array(tamanho).fill(null).map(() => Array(tamanho).fill(''));
 
-      // Insere palavras na grade
       palavrasCacaPalavras.forEach(item => {
         let inserido = false;
         let tentativas = 0;
@@ -1014,7 +887,6 @@
         }
       });
 
-      // Preenche espaços vazios com letras aleatórias do alfabeto
       const letras = "abcdefghijklmnopqrstuvwxyz";
       for (let r = 0; r < tamanho; r++) {
         for (let c = 0; c < tamanho; c++) {
@@ -1040,22 +912,18 @@
           const btn = document.createElement('button');
           btn.className = "w-8 h-8 sm:w-10 sm:h-10 bg-slate-100 border border-slate-200 rounded-lg font-signwriting text-lg sm:text-2xl hover:bg-amber-100 flex items-center justify-center transition-colors";
           btn.textContent = char;
-          btn.dataset.row = r;
-          btn.dataset.col = c;
           btn.onclick = () => clicarLetraCacaPalavras(btn);
           container.appendChild(btn);
         }
       }
 
-      // Renderizar Lista de Palavras ao lado
       const listaUl = document.getElementById('ws-lista-palavras');
       listaUl.innerHTML = '';
       palavrasCacaPalavras.forEach((p, idx) => {
         const li = document.createElement('li');
         li.className = "flex items-center justify-between p-2.5 bg-slate-50 border border-slate-200 rounded-xl font-bold text-sm text-slate-700";
-        li.id = `ws-palavra-item-${idx}`;
         li.innerHTML = `
-          <span>${p.palavra}</span>
+          <span>${p.palavra} ${p.emoji}</span>
           <span class="font-signwriting text-lg text-emerald-600">${p.palavra}</span>
         `;
         listaUl.appendChild(li);
@@ -1071,9 +939,8 @@
     }
 
     function revelarDicaCacaPalavras() {
-      const naoEncontradas = palavrasCacaPalavras.filter(p => !p.encontrada);
-      if (naoEncontradas.length > 0) {
-        alert(`Dica: Procure pela palavra "${naoEncontradas[0].palavra.toUpperCase()}" na grade.`);
+      if (palavrasCacaPalavras.length > 0) {
+        alert(`Dica: Procure pela palavra "${palavrasCacaPalavras[0].palavra.toUpperCase()}" na grade.`);
       }
     }
 
@@ -1081,9 +948,6 @@
       document.getElementById('ws-progresso').textContent = `${palavrasEncontradas} / ${palavrasCacaPalavras.length}`;
     }
 
-    /* ==========================================================================
-       9. MÓDULO: QUIZ DE LEITURA
-       ========================================================================== */
     let quizPerguntas = [];
     let quizIndex = 0;
 
@@ -1101,7 +965,6 @@
       document.getElementById('quiz-sinal').textContent = perguntaAtual.palavra;
       document.getElementById('quiz-feedback').classList.add('hidden');
 
-      // Gera 4 opções (1 correta + 3 incorretas)
       const incorretas = BANCO_PALAVRAS.filter(p => p.palavra !== perguntaAtual.palavra)
                                       .sort(() => 0.5 - Math.random())
                                       .slice(0, 3);
@@ -1116,7 +979,7 @@
         btn.className = "p-4 border-2 border-slate-200 hover:border-sky-500 hover:bg-sky-50 rounded-2xl font-extrabold text-lg text-slate-700 flex items-center justify-between transition-all shadow-sm";
         btn.innerHTML = `
           <span>${op.palavra.toUpperCase()}</span>
-          <span class="text-2xl">${op.emoji || '💬'}</span>
+          <span class="text-2xl">${op.emoji}</span>
         `;
         btn.onclick = () => responderQuiz(op.palavra === perguntaAtual.palavra, btn);
         containerOpcoes.appendChild(btn);
@@ -1151,9 +1014,6 @@
       }
     }
 
-    /* ==========================================================================
-       10. MÓDULO: ESCRITA VIVA
-       ========================================================================== */
     function carregarEscritaViva() {
       const atalhosContainer = document.getElementById('escrita-atalhos');
       const sugestoes = ["amor", "escola", "livro", "amigo", "feliz", "pao", "casa"];
@@ -1185,10 +1045,6 @@
       alert('Texto em SignWriting copiado para a área de transferência!');
     }
 
-    /* ==========================================================================
-       11. MÓDULO: JOGO DA MEMÓRIA
-       ========================================================================== */
-    let cartasMemoria = [];
     let primeiraCarta = null;
     let segundaCarta = null;
     let bloqueadoTabuleiro = false;
@@ -1197,11 +1053,9 @@
       const paresQtd = nivelDificuldade === 'facil' ? 4 : nivelDificuldade === 'medio' ? 6 : 8;
       const selecionadas = [...BANCO_PALAVRAS].sort(() => 0.5 - Math.random()).slice(0, paresQtd);
 
-      cartasMemoria = [];
+      let cartasMemoria = [];
       selecionadas.forEach((item, index) => {
-        // Carta de Texto
         cartasMemoria.push({ id: index, tipo: 'texto', conteudo: item.palavra.toUpperCase(), chave: item.palavra });
-        // Carta de SignWriting
         cartasMemoria.push({ id: index, tipo: 'sinal', conteudo: item.palavra, chave: item.palavra });
       });
 
@@ -1273,13 +1127,9 @@
       }
     }
 
-    /* ==========================================================================
-       12. MÓDULO: DICIONÁRIO E BUSCA
-       ========================================================================== */
     function renderizarDicionario() {
-      // Popula filtro de categorias
       const selectCat = document.getElementById('filtro-categoria');
-      const categorias = [...new Set(BANCO_PALAVRAS.map(p => p.categoria || 'Geral'))];
+      const categorias = [...new Set(BANCO_PALAVRAS.map(p => p.categoria))];
 
       selectCat.innerHTML = '<option value="todos">Todas as Categorias</option>';
       categorias.forEach(cat => {
@@ -1309,20 +1159,17 @@
         const card = document.createElement('div');
         card.className = "bg-white p-4 rounded-2xl border border-emerald-100 shadow-sm hover:shadow-md transition-shadow text-center flex flex-col justify-between items-center";
         card.innerHTML = `
-          <div class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">${item.categoria || 'Geral'}</div>
+          <div class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">${item.categoria}</div>
           <div class="font-signwriting text-4xl text-emerald-600 my-2">${item.palavra}</div>
           <div class="font-extrabold text-slate-800 text-sm flex items-center justify-center gap-1">
             <span>${item.palavra}</span>
-            <span>${item.emoji || ''}</span>
+            <span>${item.emoji}</span>
           </div>
         `;
         grid.appendChild(card);
       });
     }
 
-    /* ==========================================================================
-       INICIALIZAÇÃO DA APLICAÇÃO
-       ========================================================================== */
     window.addEventListener('DOMContentLoaded', () => {
       verificarStatusFonte();
       trocarAba('home');
