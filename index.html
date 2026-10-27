@@ -1,0 +1,1210 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SignWriting Kids Pro - Plataforma Educacional de Escrita de Sinais</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            min-height: 100vh;
+            user-select: none;
+        }
+
+        /* Classe dinâmica para a Fonte Customizada de SignWriting */
+        .font-signwriting {
+            font-family: 'CustomSignWriting', 'Courier New', monospace;
+            word-break: break-all;
+        }
+
+        /* Efeitos visuais lúdicos */
+        .card-bounce {
+            transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease;
+        }
+        .card-bounce:hover {
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 12px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Animação do Jogo da Memória e Flashcard */
+        .perspective-1000 {
+            perspective: 1000px;
+        }
+        .transform-style-3d {
+            transform-style: preserve-3d;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .backface-hidden {
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+        }
+        .rotate-y-180 {
+            transform: rotateY(180deg);
+        }
+
+        /* Estilização da Grade do Caça-Palavras */
+        .wordsearch-grid {
+            display: grid;
+            gap: 6px;
+            touch-action: none;
+        }
+        .ws-cell {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+        .ws-cell.selected {
+            background-color: #f59e0b !important;
+            color: #ffffff !important;
+            transform: scale(0.95);
+        }
+        .ws-cell.found {
+            background-color: #10b981 !important;
+            color: #ffffff !important;
+        }
+
+        /* Animação do Flashcard Flip */
+        .flashcard-flipped {
+            transform: rotateY(180deg);
+        }
+
+        /* Scrollbar suave */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.05);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(99, 102, 241, 0.3);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(99, 102, 241, 0.6);
+        }
+    </style>
+</head>
+<body class="text-slate-800 flex flex-col min-h-screen">
+
+    <!-- CABEÇALHO PRINCIPAL -->
+    <header class="bg-indigo-600 text-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-4">
+            
+            <!-- Logo & Título -->
+            <div class="flex items-center gap-3 cursor-pointer" onclick="switchTab('mode-read')">
+                <div class="bg-amber-400 text-indigo-950 p-2.5 rounded-2xl text-2xl font-black shadow-md transform hover:rotate-6 transition">
+                    🤟
+                </div>
+                <div>
+                    <h1 class="text-xl md:text-2xl font-black tracking-wide flex items-center gap-2">
+                        SignWriting Kids <span class="bg-amber-400 text-indigo-950 text-[10px] uppercase font-black px-2 py-0.5 rounded-full">PRO</span>
+                    </h1>
+                    <p class="text-xs text-indigo-200 font-semibold">Leitura, Escrita e Dinâmicas em Sala de Aula</p>
+                </div>
+            </div>
+
+            <!-- Nível de Dificuldade Global -->
+            <div class="flex items-center bg-indigo-700/90 p-1 rounded-2xl border border-indigo-400/30 gap-1 shadow-inner">
+                <span class="text-xs font-black uppercase text-indigo-200 px-2 flex items-center gap-1">
+                    <i class="fa-solid fa-gauge-high text-amber-300"></i> Nível:
+                </span>
+                <button onclick="setDifficulty('easy')" id="diff-btn-easy" class="diff-btn px-3 py-1 rounded-xl text-xs font-black transition bg-amber-400 text-indigo-950 shadow-sm">
+                    Fácil
+                </button>
+                <button onclick="setDifficulty('medium')" id="diff-btn-medium" class="diff-btn px-3 py-1 rounded-xl text-xs font-black transition text-indigo-200 hover:text-white">
+                    Médio
+                </button>
+                <button onclick="setDifficulty('hard')" id="diff-btn-hard" class="diff-btn px-3 py-1 rounded-xl text-xs font-black transition text-indigo-200 hover:text-white">
+                    Difícil
+                </button>
+            </div>
+
+            <!-- Placar & Status da Fonte -->
+            <div class="flex items-center gap-3">
+                <div class="flex items-center bg-indigo-800/80 px-3.5 py-1.5 rounded-2xl border border-indigo-400/30 gap-2 shadow-sm">
+                    <span class="text-amber-300 text-lg animate-pulse">⭐</span>
+                    <span id="scoreDisplay" class="font-black text-xl text-amber-300">0</span>
+                    <span class="text-[10px] text-indigo-200 uppercase font-extrabold tracking-wider">pts</span>
+                </div>
+
+                <div id="fontStatusBadge" class="hidden sm:flex items-center gap-2 bg-amber-500/20 border border-amber-300/40 text-amber-200 text-xs px-3 py-1.5 rounded-2xl">
+                    <i class="fa-solid fa-triangle-exclamation text-amber-300"></i>
+                    <span id="fontStatusText">Fonte Padrão (Sem TTF)</span>
+                </div>
+
+                <button onclick="switchTab('settings')" class="p-2.5 bg-indigo-500 hover:bg-indigo-400 rounded-2xl transition text-white shadow-sm hover:rotate-45" title="Configurações e Fonte">
+                    <i class="fa-solid fa-gear text-lg"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- CONTEÚDO PRINCIPAL / NAVEGAÇÃO -->
+    <main class="max-w-7xl mx-auto px-4 py-6 flex-1 w-full flex flex-col">
+
+        <!-- NAV BAR / ATIVIDADES -->
+        <nav class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2.5 mb-6">
+            <button onclick="switchTab('mode-flashcards')" id="btn-mode-flashcards" class="tab-btn active bg-white hover:bg-indigo-50 text-indigo-900 font-extrabold p-3 rounded-2xl shadow-sm border-2 border-transparent flex flex-col items-center justify-center gap-1.5 transition">
+                <i class="fa-solid fa-chalkboard-user text-2xl text-rose-500"></i>
+                <span class="text-xs">1. Projeção / Card</span>
+            </button>
+            <button onclick="switchTab('mode-wordsearch')" id="btn-mode-wordsearch" class="tab-btn bg-white hover:bg-indigo-50 text-indigo-900 font-extrabold p-3 rounded-2xl shadow-sm border-2 border-transparent flex flex-col items-center justify-center gap-1.5 transition">
+                <i class="fa-solid fa-border-all text-2xl text-amber-500"></i>
+                <span class="text-xs">2. Caça-Palavras</span>
+            </button>
+            <button onclick="switchTab('mode-read')" id="btn-mode-read" class="tab-btn bg-white hover:bg-indigo-50 text-indigo-900 font-extrabold p-3 rounded-2xl shadow-sm border-2 border-transparent flex flex-col items-center justify-center gap-1.5 transition">
+                <i class="fa-solid fa-eye text-2xl text-indigo-500"></i>
+                <span class="text-xs">3. Quiz Leitura</span>
+            </button>
+            <button onclick="switchTab('mode-write')" id="btn-mode-write" class="tab-btn bg-white hover:bg-indigo-50 text-indigo-900 font-extrabold p-3 rounded-2xl shadow-sm border-2 border-transparent flex flex-col items-center justify-center gap-1.5 transition">
+                <i class="fa-solid fa-pen-keyboard text-2xl text-emerald-500"></i>
+                <span class="text-xs">4. Treino Escrita</span>
+            </button>
+            <button onclick="switchTab('mode-memory')" id="btn-mode-memory" class="tab-btn bg-white hover:bg-indigo-50 text-indigo-900 font-extrabold p-3 rounded-2xl shadow-sm border-2 border-transparent flex flex-col items-center justify-center gap-1.5 transition">
+                <i class="fa-solid fa-gamepad text-2xl text-purple-500"></i>
+                <span class="text-xs">5. Memória</span>
+            </button>
+            <button onclick="switchTab('mode-dict')" id="btn-mode-dict" class="tab-btn bg-white hover:bg-indigo-50 text-indigo-900 font-extrabold p-3 rounded-2xl shadow-sm border-2 border-transparent flex flex-col items-center justify-center gap-1.5 transition">
+                <i class="fa-solid fa-book-open text-2xl text-sky-500"></i>
+                <span class="text-xs">6. Dicionário</span>
+            </button>
+        </nav>
+
+        <!-- SEÇÃO 1: FLASHCARDS DE PROJEÇÃO (SALA DE AULA) -->
+        <section id="sec-mode-flashcards" class="tab-content space-y-6">
+            <div class="bg-white rounded-3xl p-6 md:p-8 shadow-xl border border-indigo-50 max-w-4xl mx-auto space-y-6">
+                
+                <!-- Barra de Ferramentas do Professor / Projeção -->
+                <div class="flex flex-wrap items-center justify-between gap-4 border-b border-slate-100 pb-4">
+                    <div class="flex items-center gap-3">
+                        <span class="bg-rose-100 text-rose-700 font-black px-3.5 py-1.5 rounded-2xl text-xs uppercase tracking-wider flex items-center gap-1.5">
+                            <i class="fa-solid fa-chalkboard"></i> Modo Sala de Aula
+                        </span>
+                        <p class="text-xs text-slate-500 font-bold hidden sm:block">Projete em tela grande para dinâmicas em grupo</p>
+                    </div>
+
+                    <!-- Configurações da Dinâmica -->
+                    <div class="flex items-center gap-2 flex-wrap">
+                        <select id="flashcardModeSelect" onchange="resetFlashcard()" class="bg-slate-100 font-bold text-xs p-2 rounded-xl border border-slate-200 outline-none text-slate-700">
+                            <option value="sw-first">Exibir: SignWriting ➔ Revelar Português</option>
+                            <option value="pt-first">Exibir: Português/Emoji ➔ Revelar SignWriting</option>
+                        </select>
+
+                        <!-- Cronômetro -->
+                        <button onclick="toggleFlashcardTimer()" id="fcTimerBtn" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs px-3 py-2 rounded-xl transition flex items-center gap-1.5">
+                            <i class="fa-solid fa-stopwatch text-amber-500"></i>
+                            <span id="fcTimerDisplay">Timer: Off</span>
+                        </button>
+
+                        <button onclick="toggleFullScreen()" class="bg-indigo-100 hover:bg-indigo-200 text-indigo-700 p-2 rounded-xl transition" title="Tela Cheia">
+                            <i class="fa-solid fa-expand text-sm"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- CARTÃO GIGANTE DO FLASHCARD COM FLIP 3D -->
+                <div class="perspective-1000 w-full min-h-[340px] md:min-h-[420px] cursor-pointer" onclick="flipFlashcard()">
+                    <div id="flashcardInner" class="transform-style-3d relative w-full h-full min-h-[340px] md:min-h-[420px] rounded-3xl bg-gradient-to-br from-indigo-50 to-slate-50 border-4 border-indigo-200 shadow-2xl flex items-center justify-center p-6 text-center">
+                        
+                        <!-- Lado A (Frente) -->
+                        <div id="flashcardFront" class="absolute inset-0 w-full h-full backface-hidden flex flex-col items-center justify-center p-8 space-y-4">
+                            <!-- Conteúdo injetado via JS -->
+                        </div>
+
+                        <!-- Lado B (Verso - Revelado) -->
+                        <div id="flashcardBack" class="absolute inset-0 w-full h-full backface-hidden rotate-y-180 bg-gradient-to-br from-amber-50 to-orange-50 border-4 border-amber-300 rounded-3xl flex flex-col items-center justify-center p-8 space-y-4">
+                            <!-- Conteúdo injetado via JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Botões de Controle e Navegação do Professor -->
+                <div class="flex items-center justify-between gap-4">
+                    <button onclick="prevFlashcard()" class="flex-1 bg-slate-100 hover:bg-slate-200 active:scale-95 text-slate-800 font-black py-4 rounded-2xl transition flex items-center justify-center gap-2 text-base md:text-lg shadow-sm">
+                        <i class="fa-solid fa-arrow-left"></i> Anterior
+                    </button>
+
+                    <button onclick="flipFlashcard()" class="flex-1 bg-amber-400 hover:bg-amber-500 active:scale-95 text-indigo-950 font-black py-4 rounded-2xl transition flex items-center justify-center gap-2 text-base md:text-lg shadow-md">
+                        <i class="fa-solid fa-rotate"></i> Revelar / Virar
+                    </button>
+
+                    <button onclick="nextFlashcard()" class="flex-1 bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white font-black py-4 rounded-2xl transition flex items-center justify-center gap-2 text-base md:text-lg shadow-md">
+                        Próximo <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- SEÇÃO 2: CAÇA-PALAVRAS EM SIGNWRITING -->
+        <section id="sec-mode-wordsearch" class="tab-content space-y-6 hidden">
+            <div class="bg-white rounded-3xl p-6 md:p-8 shadow-xl border border-indigo-50 max-w-5xl mx-auto space-y-6">
+                
+                <div class="flex flex-wrap items-center justify-between gap-4 border-b border-slate-100 pb-4">
+                    <div>
+                        <span class="bg-amber-100 text-amber-700 font-black px-3.5 py-1.5 rounded-2xl text-xs uppercase tracking-wider">
+                            Caça-Palavras de SignWriting
+                        </span>
+                        <h2 class="text-xl font-black text-slate-800 mt-1">Encontre as palavras na grade de sinais!</h2>
+                    </div>
+                    <button onclick="initWordSearch()" class="bg-amber-400 hover:bg-amber-500 text-indigo-950 font-black text-xs px-4 py-2.5 rounded-2xl transition flex items-center gap-2 shadow-sm">
+                        <i class="fa-solid fa-shuffle"></i> Gerar Nova Grade
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+                    
+                    <!-- Container da Grade de Sinais -->
+                    <div class="lg:col-span-2 bg-slate-50 p-4 md:p-6 rounded-3xl border-2 border-indigo-100 flex justify-center">
+                        <div id="wordsearchContainer" class="wordsearch-grid w-full max-w-md font-signwriting text-2xl md:text-3xl">
+                            <!-- Células geradas via JS -->
+                        </div>
+                    </div>
+
+                    <!-- Painel Lateral: Palavras para Encontrar -->
+                    <div class="space-y-4">
+                        <h3 class="font-extrabold text-slate-700 text-sm uppercase tracking-wider flex items-center gap-2">
+                            <i class="fa-solid fa-list-check text-amber-500"></i> Palavras Escondidas:
+                        </h3>
+                        <div id="wsWordList" class="grid grid-cols-2 lg:grid-cols-1 gap-2.5">
+                            <!-- Lista de Palavras com Checkbox/Status gerado via JS -->
+                        </div>
+
+                        <div class="p-4 bg-indigo-50 rounded-2xl border border-indigo-100 text-xs text-indigo-800 font-bold space-y-1">
+                            <p><i class="fa-solid fa-lightbulb text-amber-500 mr-1"></i> <strong>Como jogar:</strong></p>
+                            <p>Clique na primeira e na última letra do sinal na grade para marcar a palavra correspondente!</p>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </section>
+
+        <!-- SEÇÃO 3: QUIZ DE LEITURA -->
+        <section id="sec-mode-read" class="tab-content space-y-6 hidden">
+            <div class="bg-white rounded-3xl p-6 md:p-8 shadow-xl border border-indigo-50 max-w-2xl mx-auto text-center space-y-6">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+                    <span class="bg-indigo-100 text-indigo-700 font-extrabold px-3 py-1 rounded-full text-xs uppercase tracking-wider">
+                        Quiz de Leitura
+                    </span>
+                    <span class="text-xs text-slate-400 font-bold">Qual é a palavra em Português?</span>
+                </div>
+
+                <!-- Exibição do Sinal em SignWriting -->
+                <div class="py-8 px-4 bg-slate-50 rounded-2xl border-2 border-dashed border-indigo-200 flex flex-col items-center justify-center min-h-[180px]">
+                    <div id="readSignDisplay" class="font-signwriting text-5xl md:text-7xl text-indigo-900 tracking-widest">
+                        BOLA
+                    </div>
+                </div>
+
+                <!-- Opções de Resposta -->
+                <div id="readOptionsContainer" class="grid grid-cols-2 gap-4">
+                    <!-- Gerado dinamicamente via JS -->
+                </div>
+
+                <!-- Feedback Visual -->
+                <div id="readFeedback" class="hidden p-4 rounded-2xl font-bold text-center text-lg animate-bounce"></div>
+            </div>
+        </section>
+
+        <!-- SEÇÃO 4: TREINO DE ESCRITA -->
+        <section id="sec-mode-write" class="tab-content space-y-6 hidden">
+            <div class="bg-white rounded-3xl p-6 md:p-8 shadow-xl border border-indigo-50 max-w-2xl mx-auto text-center space-y-6">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+                    <span class="bg-emerald-100 text-emerald-700 font-extrabold px-3 py-1 rounded-full text-xs uppercase tracking-wider">
+                        Treino de Escrita
+                    </span>
+                    <span class="text-xs text-slate-400 font-bold">Digite a palavra correspondente</span>
+                </div>
+
+                <div class="flex flex-col items-center gap-3">
+                    <div id="writeEmojiDisplay" class="text-6xl bg-emerald-50 p-4 rounded-3xl border border-emerald-100 shadow-inner">
+                        🐱
+                    </div>
+                    <h2 id="writeTargetWord" class="text-2xl font-black text-slate-800 tracking-wide uppercase">
+                        GATO
+                    </h2>
+                </div>
+
+                <div class="space-y-3">
+                    <input type="text" id="writeInput" placeholder="Digite aqui a palavra..." autocomplete="off" class="w-full text-center text-2xl font-bold p-4 rounded-2xl border-2 border-slate-200 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-100 outline-none transition uppercase">
+                    <button onclick="checkWriteAnswer()" class="w-full bg-emerald-500 hover:bg-emerald-600 active:scale-95 text-white font-extrabold py-4 rounded-2xl text-lg shadow-lg shadow-emerald-500/30 transition">
+                        Verificar Escrita ✨
+                    </button>
+                </div>
+
+                <!-- Visualização em Tempo Real da Fonte SignWriting -->
+                <div class="p-6 bg-slate-50 rounded-2xl border-2 border-indigo-100">
+                    <p class="text-xs font-bold text-slate-400 mb-2 uppercase tracking-wider">Conversão em Tempo Real (SignWriting):</p>
+                    <div id="writeSignPreview" class="font-signwriting text-4xl md:text-6xl text-indigo-900 tracking-wider min-h-[60px] flex items-center justify-center">
+                        ---
+                    </div>
+                </div>
+
+                <div id="writeFeedback" class="hidden p-4 rounded-2xl font-bold text-center text-lg"></div>
+            </div>
+        </section>
+
+        <!-- SEÇÃO 5: JOGO DA MEMÓRIA -->
+        <section id="sec-mode-memory" class="tab-content space-y-6 hidden">
+            <div class="bg-white rounded-3xl p-6 shadow-xl border border-indigo-50 max-w-4xl mx-auto space-y-4">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+                    <div>
+                        <span class="bg-purple-100 text-purple-700 font-extrabold px-3 py-1 rounded-full text-xs uppercase tracking-wider">
+                            Jogo da Memória
+                        </span>
+                        <h2 class="text-lg font-extrabold text-slate-800 mt-1">Associe o Sinal com a Palavra</h2>
+                    </div>
+                    <button onclick="initMemoryGame()" class="bg-purple-500 hover:bg-purple-600 text-white text-sm font-bold px-4 py-2 rounded-xl transition flex items-center gap-2">
+                        <i class="fa-solid fa-rotate-right"></i> Reiniciar
+                    </button>
+                </div>
+
+                <div id="memoryGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 py-4">
+                    <!-- Cartas geradas via JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- SEÇÃO 6: DICIONÁRIO INTERATIVO -->
+        <section id="sec-mode-dict" class="tab-content space-y-6 hidden">
+            <div class="bg-white rounded-3xl p-6 shadow-xl border border-indigo-50 max-w-5xl mx-auto space-y-6">
+                <div class="flex flex-col md:flex-row md:items-center justify-between border-b border-slate-100 pb-4 gap-2">
+                    <div>
+                        <span class="bg-sky-100 text-sky-700 font-extrabold px-3 py-1 rounded-full text-xs uppercase tracking-wider">
+                            Dicionário & Abecedário
+                        </span>
+                        <h2 class="text-lg font-extrabold text-slate-800 mt-1">Mapeamento de Teclas para SignWriting</h2>
+                    </div>
+                    <p class="text-xs text-slate-500 font-semibold">Clique para explorar os caracteres na fonte customizada.</p>
+                </div>
+
+                <div id="alphabetGrid" class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-7 gap-3">
+                    <!-- Teclas A-Z geradas via JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- SEÇÃO: CONFIGURAÇÕES & CARREGAMENTO DE FONTE -->
+        <section id="sec-settings" class="tab-content space-y-6 hidden">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+                
+                <!-- Upload da Fonte TTF -->
+                <div class="bg-white rounded-3xl p-6 shadow-xl border border-indigo-50 space-y-4">
+                    <div class="flex items-center gap-3 border-b border-slate-100 pb-3">
+                        <div class="p-3 bg-rose-100 text-rose-600 rounded-2xl">
+                            <i class="fa-solid fa-font text-xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-extrabold text-slate-800">Fonte Customizada (.TTF)</h3>
+                            <p class="text-xs text-slate-400">Carregue o arquivo de fonte de SignWriting</p>
+                        </div>
+                    </div>
+
+                    <div class="p-5 bg-slate-50 rounded-2xl border-2 border-dashed border-slate-200 text-center space-y-3">
+                        <i class="fa-solid fa-file-arrow-up text-4xl text-indigo-400"></i>
+                        <p class="text-xs text-slate-600 font-semibold">Selecione o arquivo <code class="bg-slate-200 px-1.5 py-0.5 rounded text-rose-600 font-bold">.ttf</code> da sua fonte:</p>
+                        <input type="file" id="fontFileInput" accept=".ttf" class="hidden" onchange="handleFontUpload(event)">
+                        <label for="fontFileInput" class="inline-block bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm px-5 py-3 rounded-xl cursor-pointer transition shadow-md hover:scale-105">
+                            <i class="fa-solid fa-folder-open mr-2"></i> Escolher Arquivo TTF
+                        </label>
+                        <p id="fontFileName" class="text-xs text-slate-500 font-bold truncate"></p>
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="text-xs font-bold text-slate-500 uppercase">Teste em Tempo Real:</label>
+                        <input type="text" id="fontTestInput" value="ABCDEF 123" placeholder="Digite para testar..." class="w-full p-3 rounded-xl border border-slate-200 text-center font-bold font-signwriting text-3xl text-indigo-900 bg-slate-50">
+                    </div>
+                </div>
+
+                <!-- Banco de Palavras -->
+                <div class="bg-white rounded-3xl p-6 shadow-xl border border-indigo-50 space-y-4">
+                    <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                        <div class="flex items-center gap-3">
+                            <div class="p-3 bg-amber-100 text-amber-600 rounded-2xl">
+                                <i class="fa-solid fa-list-check text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-extrabold text-slate-800">Gerenciar Banco de Palavras</h3>
+                                <p class="text-xs text-slate-400">Adicione ou remova termos dos jogos</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <form onsubmit="addNewWord(event)" class="flex gap-2">
+                        <input type="text" id="newWordInput" placeholder="Ex: AMIGO" required class="flex-1 p-2.5 rounded-xl border border-slate-200 text-sm font-bold uppercase outline-none focus:border-indigo-500">
+                        <input type="text" id="newEmojiInput" placeholder="Emoji (🤝)" maxlength="2" required class="w-20 p-2.5 rounded-xl border border-slate-200 text-sm text-center font-bold outline-none focus:border-indigo-500">
+                        <button type="submit" class="bg-emerald-500 hover:bg-emerald-600 text-white font-bold px-4 rounded-xl text-sm transition">
+                            <i class="fa-solid fa-plus"></i>
+                        </button>
+                    </form>
+
+                    <div class="max-h-52 overflow-y-auto pr-1 space-y-2" id="wordListContainer">
+                        <!-- Lista gerada via JS -->
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- RODAPÉ -->
+    <footer class="bg-white border-t border-slate-100 py-4 text-center text-xs text-slate-400">
+        <p>SignWriting Kids Pro — Plataforma Completa para Aprendizado de Escrita de Sinais em Ambientes Educacionais.</p>
+    </footer>
+
+    <!-- LOGICA JAVASCRIPT COMPLETA -->
+    <script>
+        /* ==========================================================================
+           1. ESTADO GLOBAL DA APLICAÇÃO
+           ========================================================================== */
+        let isCustomFontLoaded = false;
+        let score = 0;
+        let currentDifficulty = 'easy'; // 'easy', 'medium', 'hard'
+
+        // Banco de Palavras Mestre com Níveis
+        let masterWordBank = [
+            // FÁCIL (3-4 letras)
+            { word: "SOL", emoji: "☀️", difficulty: "easy" },
+            { word: "CASA", emoji: "🏠", difficulty: "easy" },
+            { word: "BOLA", emoji: "⚽", difficulty: "easy" },
+            { word: "GATO", emoji: "🐱", difficulty: "easy" },
+            { word: "AGUA", emoji: "💧", difficulty: "easy" },
+            { word: "AMOR", emoji: "❤️", difficulty: "easy" },
+            { word: "DOCE", emoji: "🍬", difficulty: "easy" },
+
+            // MÉDIO (5-6 letras)
+            { word: "ESCOLA", emoji: "🏫", difficulty: "medium" },
+            { word: "ARVORE", emoji: "🌳", difficulty: "medium" },
+            { word: "AMIGO", emoji: "🤝", difficulty: "medium" },
+            { word: "FLOR", emoji: "🌸", difficulty: "medium" },
+            { word: "PEIXE", emoji: "🐟", difficulty: "medium" },
+            { word: "LIVRO", emoji: "📚" , difficulty: "medium"},
+            { word: "CANETA", emoji: "🖊️", difficulty: "medium" },
+
+            // DIFÍCIL (7+ letras)
+            { word: "PROFESSOR", emoji: "👨‍🏫", difficulty: "hard" },
+            { word: "COMPUTADOR", emoji: "💻", difficulty: "hard" },
+            { word: "BORBOLETA", emoji: "🦋", difficulty: "hard" },
+            { word: "TELEFONE", emoji: "📞", difficulty: "hard" },
+            { word: "ESTUDANTE", emoji: "🧑‍🎓", difficulty: "hard" }
+        ];
+
+        // Estados dos Modos
+        let currentReadWord = null;
+        let currentWriteWord = null;
+        let memoryCards = [];
+        let flippedCards = [];
+        let matchedPairs = 0;
+
+        // Flashcards State
+        let flashcardsList = [];
+        let currentFcIndex = 0;
+        let isFcFlipped = false;
+        let fcTimerInterval = null;
+        let fcTimeLeft = 10;
+
+        // Caça-Palavras State
+        let wsGrid = [];
+        let wsGridSize = 8; // 8x8 fácil, 10x10 médio, 12x12 difícil
+        let wsTargetWords = [];
+        let wsFoundWords = [];
+        let wsSelectedCells = [];
+
+        /* ==========================================================================
+           2. SINTETIZADOR DE SOM (Web Audio API)
+           ========================================================================== */
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+        function playSound(type) {
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            const now = audioCtx.currentTime;
+
+            if (type === 'correct') {
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(523.25, now);
+                osc.frequency.exponentialRampToValueAtTime(659.25, now + 0.1);
+                osc.frequency.exponentialRampToValueAtTime(783.99, now + 0.2);
+                gain.gain.setValueAtTime(0.25, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
+                osc.start(now);
+                osc.stop(now + 0.4);
+            } else if (type === 'wrong') {
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(180, now);
+                osc.frequency.linearRampToValueAtTime(110, now + 0.2);
+                gain.gain.setValueAtTime(0.25, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+                osc.start(now);
+                osc.stop(now + 0.3);
+            } else if (type === 'click') {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(450, now);
+                osc.frequency.exponentialRampToValueAtTime(220, now + 0.05);
+                gain.gain.setValueAtTime(0.12, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.05);
+                osc.start(now);
+                osc.stop(now + 0.05);
+            }
+        }
+
+        /* ==========================================================================
+           3. INICIALIZAÇÃO & GERENCIAMENTO DE NÍVEL
+           ========================================================================== */
+        window.addEventListener('DOMContentLoaded', () => {
+            renderWordList();
+            initAllModes();
+            renderDictionary();
+            
+            document.getElementById('writeInput').addEventListener('input', (e) => {
+                const val = e.target.value.toUpperCase();
+                document.getElementById('writeSignPreview').textContent = val || '---';
+            });
+        });
+
+        function setDifficulty(diff) {
+            playSound('click');
+            currentDifficulty = diff;
+
+            document.querySelectorAll('.diff-btn').forEach(btn => {
+                btn.className = "diff-btn px-3 py-1 rounded-xl text-xs font-black transition text-indigo-200 hover:text-white";
+            });
+
+            const activeBtn = document.getElementById(`diff-btn-${diff}`);
+            if (activeBtn) {
+                activeBtn.className = "diff-btn px-3 py-1 rounded-xl text-xs font-black transition bg-amber-400 text-indigo-950 shadow-sm";
+            }
+
+            initAllModes();
+        }
+
+        function getFilteredWords() {
+            const filtered = masterWordBank.filter(w => w.difficulty === currentDifficulty);
+            return filtered.length > 0 ? filtered : masterWordBank;
+        }
+
+        function initAllModes() {
+            initFlashcards();
+            initWordSearch();
+            initReadMode();
+            initWriteMode();
+            initMemoryGame();
+        }
+
+        function switchTab(tabId) {
+            playSound('click');
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('border-indigo-600', 'bg-indigo-50');
+            });
+
+            const activeSec = document.getElementById(`sec-${tabId}`);
+            if (activeSec) activeSec.classList.remove('hidden');
+
+            const activeBtn = document.getElementById(`btn-${tabId}`);
+            if (activeBtn) activeBtn.classList.add('border-indigo-600', 'bg-indigo-50');
+        }
+
+        function addScore(pts) {
+            score += pts;
+            document.getElementById('scoreDisplay').textContent = score;
+        }
+
+        /* ==========================================================================
+           4. UPLOAD DA FONTE TTF & PERSISTÊNCIA
+           ========================================================================== */
+        function handleFontUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            document.getElementById('fontFileName').textContent = `Carregando: ${file.name}...`;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const fontBuffer = e.target.result;
+                const customFont = new FontFace('CustomSignWriting', fontBuffer);
+                
+                customFont.load().then(loadedFont => {
+                    document.fonts.add(loadedFont);
+                    isCustomFontLoaded = true;
+
+                    const badge = document.getElementById('fontStatusBadge');
+                    badge.classList.remove('hidden');
+                    badge.className = "flex items-center gap-2 bg-emerald-500/20 border border-emerald-300/40 text-emerald-200 text-xs px-3 py-1.5 rounded-2xl";
+                    badge.innerHTML = `<i class="fa-solid fa-check-circle text-emerald-400"></i> <span>Fonte Customizada Ativa</span>`;
+
+                    document.getElementById('fontFileName').textContent = `✅ ${file.name} (Carregada)`;
+
+                    playSound('correct');
+                    confetti({ particleCount: 50, spread: 60, origin: { y: 0.2 } });
+
+                    // Re-renderiza caça-palavras para aplicar fonte
+                    initWordSearch();
+                }).catch(err => {
+                    alert("Erro ao carregar o arquivo TTF. Certifique-se de que é um arquivo de fonte válido.");
+                });
+            };
+
+            reader.readAsArrayBuffer(file);
+        }
+
+        /* ==========================================================================
+           5. MODO 1: FLASHCARDS PARA PROJEÇÃO EM SALA
+           ========================================================================== */
+        function initFlashcards() {
+            flashcardsList = [...getFilteredWords()].sort(() => Math.random() - 0.5);
+            currentFcIndex = 0;
+            isFcFlipped = false;
+            renderFlashcardContent();
+        }
+
+        function renderFlashcardContent() {
+            if (!flashcardsList.length) return;
+            const item = flashcardsList[currentFcIndex];
+            const mode = document.getElementById('flashcardModeSelect').value;
+
+            const frontEl = document.getElementById('flashcardFront');
+            const backEl = document.getElementById('flashcardBack');
+            const innerEl = document.getElementById('flashcardInner');
+
+            innerEl.classList.remove('flashcard-flipped');
+            isFcFlipped = false;
+
+            if (mode === 'sw-first') {
+                // Frente: SignWriting
+                frontEl.innerHTML = `
+                    <span class="bg-indigo-200/80 text-indigo-900 text-xs font-black px-3 py-1 rounded-full uppercase tracking-widest">SignWriting</span>
+                    <div class="font-signwriting text-7xl md:text-9xl text-indigo-950 my-auto tracking-widest">
+                        ${item.word}
+                    </div>
+                    <p class="text-xs text-slate-400 font-bold animate-pulse">Clique para revelar a resposta em Português ➔</p>
+                `;
+
+                // Verso: Português + Emoji
+                backEl.innerHTML = `
+                    <span class="bg-amber-200 text-amber-900 text-xs font-black px-3 py-1 rounded-full uppercase tracking-widest">Resposta</span>
+                    <div class="text-7xl md:text-8xl">${item.emoji}</div>
+                    <h2 class="text-4xl md:text-6xl font-black text-slate-900 uppercase tracking-wide">${item.word}</h2>
+                `;
+            } else {
+                // Frente: Português + Emoji
+                frontEl.innerHTML = `
+                    <span class="bg-amber-200 text-amber-900 text-xs font-black px-3 py-1 rounded-full uppercase tracking-widest">Palavra</span>
+                    <div class="text-7xl md:text-8xl">${item.emoji}</div>
+                    <h2 class="text-4xl md:text-6xl font-black text-slate-900 uppercase tracking-wide">${item.word}</h2>
+                    <p class="text-xs text-slate-400 font-bold animate-pulse">Clique para ver o sinal correspondente ➔</p>
+                `;
+
+                // Verso: SignWriting
+                backEl.innerHTML = `
+                    <span class="bg-indigo-200/80 text-indigo-900 text-xs font-black px-3 py-1 rounded-full uppercase tracking-widest">SignWriting</span>
+                    <div class="font-signwriting text-7xl md:text-9xl text-indigo-950 my-auto tracking-widest">
+                        ${item.word}
+                    </div>
+                `;
+            }
+        }
+
+        function flipFlashcard() {
+            playSound('click');
+            const innerEl = document.getElementById('flashcardInner');
+            isFcFlipped = !isFcFlipped;
+            if (isFcFlipped) {
+                innerEl.classList.add('flashcard-flipped');
+            } else {
+                innerEl.classList.remove('flashcard-flipped');
+            }
+        }
+
+        function nextFlashcard() {
+            playSound('click');
+            currentFcIndex = (currentFcIndex + 1) % flashcardsList.length;
+            renderFlashcardContent();
+        }
+
+        function prevFlashcard() {
+            playSound('click');
+            currentFcIndex = (currentFcIndex - 1 + flashcardsList.length) % flashcardsList.length;
+            renderFlashcardContent();
+        }
+
+        function resetFlashcard() {
+            initFlashcards();
+        }
+
+        function toggleFlashcardTimer() {
+            const btn = document.getElementById('fcTimerBtn');
+            const display = document.getElementById('fcTimerDisplay');
+
+            if (fcTimerInterval) {
+                clearInterval(fcTimerInterval);
+                fcTimerInterval = null;
+                display.textContent = "Timer: Off";
+                btn.classList.remove('bg-amber-100', 'text-amber-800');
+            } else {
+                fcTimeLeft = 10;
+                display.textContent = `⏱️ ${fcTimeLeft}s`;
+                btn.classList.add('bg-amber-100', 'text-amber-800');
+
+                fcTimerInterval = setInterval(() => {
+                    fcTimeLeft--;
+                    display.textContent = `⏱️ ${fcTimeLeft}s`;
+                    if (fcTimeLeft <= 0) {
+                        playSound('wrong');
+                        flipFlashcard();
+                        clearInterval(fcTimerInterval);
+                        fcTimerInterval = null;
+                    }
+                }, 1000);
+            }
+        }
+
+        function toggleFullScreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(() => {});
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
+            }
+        }
+
+        /* ==========================================================================
+           6. MODO 2: CAÇA-PALAVRAS DE SIGNWRITING
+           ========================================================================== */
+        function initWordSearch() {
+            wsFoundWords = [];
+            wsSelectedCells = [];
+
+            // Define tamanho baseado na dificuldade
+            if (currentDifficulty === 'easy') wsGridSize = 8;
+            else if (currentDifficulty === 'medium') wsGridSize = 10;
+            else wsGridSize = 12;
+
+            const words = getFilteredWords().slice(0, currentDifficulty === 'easy' ? 4 : (currentDifficulty === 'medium' ? 5 : 6));
+            wsTargetWords = words;
+
+            // Inicializa grade vazia
+            wsGrid = Array(wsGridSize).fill(null).map(() => Array(wsGridSize).fill(''));
+
+            // Insere palavras na grade (Horizontal/Vertical)
+            words.forEach(item => {
+                let placed = false;
+                let attempts = 0;
+                while (!placed && attempts < 100) {
+                    attempts++;
+                    const word = item.word;
+                    const direction = Math.random() > 0.5 ? 'H' : 'V';
+                    let row = Math.floor(Math.random() * wsGridSize);
+                    let col = Math.floor(Math.random() * wsGridSize);
+
+                    if (direction === 'H' && col + word.length <= wsGridSize) {
+                        let canPlace = true;
+                        for (let i = 0; i < word.length; i++) {
+                            if (wsGrid[row][col + i] !== '' && wsGrid[row][col + i] !== word[i]) {
+                                canPlace = false;
+                                break;
+                            }
+                        }
+                        if (canPlace) {
+                            for (let i = 0; i < word.length; i++) {
+                                wsGrid[row][col + i] = word[i];
+                            }
+                            placed = true;
+                        }
+                    } else if (direction === 'V' && row + word.length <= wsGridSize) {
+                        let canPlace = true;
+                        for (let i = 0; i < word.length; i++) {
+                            if (wsGrid[row + i][col] !== '' && wsGrid[row + i][col] !== word[i]) {
+                                canPlace = false;
+                                break;
+                            }
+                        }
+                        if (canPlace) {
+                            for (let i = 0; i < word.length; i++) {
+                                wsGrid[row + i][col] = word[i];
+                            }
+                            placed = true;
+                        }
+                    }
+                }
+            });
+
+            // Preenche espaços vazios com caracteres do alfabeto
+            const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            for (let r = 0; r < wsGridSize; r++) {
+                for (let c = 0; c < wsGridSize; c++) {
+                    if (wsGrid[r][c] === '') {
+                        wsGrid[r][c] = alphabet[Math.floor(Math.random() * alphabet.length)];
+                    }
+                }
+            }
+
+            renderWordSearchGrid();
+            renderWordSearchList();
+        }
+
+        function renderWordSearchGrid() {
+            const container = document.getElementById('wordsearchContainer');
+            container.style.gridTemplateColumns = `repeat(${wsGridSize}, minmax(0, 1fr))`;
+            container.innerHTML = '';
+
+            for (let r = 0; r < wsGridSize; r++) {
+                for (let c = 0; c < wsGridSize; c++) {
+                    const cell = document.createElement('div');
+                    cell.className = `ws-cell bg-white border border-indigo-100 shadow-sm text-indigo-950`;
+                    cell.textContent = wsGrid[r][c];
+                    cell.dataset.row = r;
+                    cell.dataset.col = c;
+                    cell.onclick = () => handleWsCellClick(r, c, cell);
+                    container.appendChild(cell);
+                }
+            }
+        }
+
+        function renderWordSearchList() {
+            const container = document.getElementById('wsWordList');
+            container.innerHTML = '';
+
+            wsTargetWords.forEach(item => {
+                const isFound = wsFoundWords.includes(item.word);
+                const el = document.createElement('div');
+                el.className = `p-3 rounded-2xl flex items-center justify-between font-bold text-xs ${isFound ? 'bg-emerald-100 text-emerald-800 border border-emerald-300' : 'bg-slate-100 text-slate-700'}`;
+                el.innerHTML = `
+                    <div class="flex items-center gap-2">
+                        <span>${item.emoji}</span>
+                        <span>${item.word}</span>
+                    </div>
+                    <i class="${isFound ? 'fa-solid fa-circle-check text-emerald-600 text-base' : 'fa-regular fa-circle text-slate-300'}"></i>
+                `;
+                container.appendChild(el);
+            });
+        }
+
+        function handleWsCellClick(r, c, cellEl) {
+            playSound('click');
+
+            if (wsSelectedCells.length === 0) {
+                wsSelectedCells.push({ r, c, cellEl });
+                cellEl.classList.add('selected');
+            } else if (wsSelectedCells.length === 1) {
+                const first = wsSelectedCells[0];
+                if (first.r === r && first.c === c) {
+                    first.cellEl.classList.remove('selected');
+                    wsSelectedCells = [];
+                    return;
+                }
+
+                // Extrai a palavra selecionada entre a primeira e a segunda célula
+                let wordStr = "";
+                let pathCells = [];
+
+                if (first.r === r) { // Seleção Horizontal
+                    const minC = Math.min(first.c, c);
+                    const maxC = Math.max(first.c, c);
+                    for (let col = minC; col <= maxC; col++) {
+                        wordStr += wsGrid[r][col];
+                        const cell = document.querySelector(`.ws-cell[data-row='${r}'][data-col='${col}']`);
+                        pathCells.push(cell);
+                    }
+                } else if (first.c === c) { // Seleção Vertical
+                    const minR = Math.min(first.r, r);
+                    const maxR = Math.max(first.r, r);
+                    for (let row = minR; row <= maxR; row++) {
+                        wordStr += wsGrid[row][c];
+                        const cell = document.querySelector(`.ws-cell[data-row='${row}'][data-col='${c}']`);
+                        pathCells.push(cell);
+                    }
+                }
+
+                const wordReverse = wordStr.split('').reverse().join('');
+                const matchWord = wsTargetWords.find(w => w.word === wordStr || w.word === wordReverse);
+
+                if (matchWord && !wsFoundWords.includes(matchWord.word)) {
+                    playSound('correct');
+                    addScore(25);
+                    wsFoundWords.push(matchWord.word);
+
+                    pathCells.forEach(cell => {
+                        cell.classList.remove('selected');
+                        cell.classList.add('found');
+                    });
+
+                    renderWordSearchList();
+
+                    if (wsFoundWords.length === wsTargetWords.length) {
+                        confetti({ particleCount: 100, spread: 80, origin: { y: 0.5 } });
+                    }
+                } else {
+                    playSound('wrong');
+                    pathCells.forEach(cell => cell.classList.remove('selected'));
+                }
+
+                wsSelectedCells = [];
+            }
+        }
+
+        /* ==========================================================================
+           7. MODO 3: QUIZ DE LEITURA
+           ========================================================================== */
+        function initReadMode() {
+            document.getElementById('readFeedback').classList.add('hidden');
+            const words = getFilteredWords();
+            currentReadWord = words[Math.floor(Math.random() * words.length)];
+            
+            document.getElementById('readSignDisplay').textContent = currentReadWord.word;
+
+            let options = [currentReadWord];
+            while (options.length < Math.min(4, words.length)) {
+                let r = words[Math.floor(Math.random() * words.length)];
+                if (!options.find(o => o.word === r.word)) {
+                    options.push(r);
+                }
+            }
+            options.sort(() => Math.random() - 0.5);
+
+            const container = document.getElementById('readOptionsContainer');
+            container.innerHTML = '';
+
+            options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = "card-bounce bg-slate-50 hover:bg-indigo-600 hover:text-white border-2 border-slate-200 text-slate-800 font-extrabold text-lg p-4 rounded-2xl flex items-center justify-center gap-3 transition shadow-sm";
+                btn.innerHTML = `<span class="text-2xl">${opt.emoji}</span> <span>${opt.word}</span>`;
+                btn.onclick = () => checkReadAnswer(opt.word);
+                container.appendChild(btn);
+            });
+        }
+
+        function checkReadAnswer(selectedWord) {
+            const feedbackEl = document.getElementById('readFeedback');
+            feedbackEl.classList.remove('hidden', 'bg-emerald-100', 'text-emerald-700', 'bg-rose-100', 'text-rose-700');
+
+            if (selectedWord === currentReadWord.word) {
+                playSound('correct');
+                addScore(10);
+                confetti({ particleCount: 60, spread: 60, origin: { y: 0.6 } });
+
+                feedbackEl.classList.add('bg-emerald-100', 'text-emerald-700');
+                feedbackEl.innerHTML = `🎉 Muito bem! Você acertou! (+10 pts)`;
+
+                setTimeout(() => { initReadMode(); }, 1500);
+            } else {
+                playSound('wrong');
+                feedbackEl.classList.add('bg-rose-100', 'text-rose-700');
+                feedbackEl.innerHTML = `❌ Ops! Tente novamente.`;
+            }
+        }
+
+        /* ==========================================================================
+           8. MODO 4: TREINO DE ESCRITA
+           ========================================================================== */
+        function initWriteMode() {
+            document.getElementById('writeInput').value = '';
+            document.getElementById('writeSignPreview').textContent = '---';
+            document.getElementById('writeFeedback').classList.add('hidden');
+
+            const words = getFilteredWords();
+            currentWriteWord = words[Math.floor(Math.random() * words.length)];
+
+            document.getElementById('writeEmojiDisplay').textContent = currentWriteWord.emoji;
+            document.getElementById('writeTargetWord').textContent = currentWriteWord.word;
+        }
+
+        function checkWriteAnswer() {
+            const inputVal = document.getElementById('writeInput').value.trim().toUpperCase();
+            const feedbackEl = document.getElementById('writeFeedback');
+            feedbackEl.classList.remove('hidden', 'bg-emerald-100', 'text-emerald-700', 'bg-rose-100', 'text-rose-700');
+
+            if (inputVal === currentWriteWord.word) {
+                playSound('correct');
+                addScore(15);
+                confetti({ particleCount: 70, spread: 70, origin: { y: 0.6 } });
+
+                feedbackEl.classList.add('bg-emerald-100', 'text-emerald-700');
+                feedbackEl.innerHTML = `🌟 Perfeito! Escrita correta! (+15 pts)`;
+
+                setTimeout(() => { initWriteMode(); }, 1500);
+            } else {
+                playSound('wrong');
+                feedbackEl.classList.add('bg-rose-100', 'text-rose-700');
+                feedbackEl.innerHTML = `💡 Confira as letras digitadas e tente de novo.`;
+            }
+        }
+
+        /* ==========================================================================
+           9. MODO 5: JOGO DA MEMÓRIA
+           ========================================================================== */
+        function initMemoryGame() {
+            const grid = document.getElementById('memoryGrid');
+            grid.innerHTML = '';
+            flippedCards = [];
+            matchedPairs = 0;
+
+            const pairCount = currentDifficulty === 'easy' ? 4 : (currentDifficulty === 'medium' ? 6 : 8);
+            const selected = [...getFilteredWords()].sort(() => Math.random() - 0.5).slice(0, pairCount);
+            
+            memoryCards = [];
+            selected.forEach((item, index) => {
+                memoryCards.push({ id: index, type: 'pt', content: item.word, emoji: item.emoji, matchId: index });
+                memoryCards.push({ id: index, type: 'sw', content: item.word, emoji: item.emoji, matchId: index });
+            });
+
+            memoryCards.sort(() => Math.random() - 0.5);
+
+            memoryCards.forEach((card, idx) => {
+                const cardEl = document.createElement('div');
+                cardEl.className = "perspective-1000 h-28 cursor-pointer";
+                cardEl.innerHTML = `
+                    <div id="card-inner-${idx}" class="relative w-full h-full rounded-2xl shadow-md transition-transform duration-500 transform-style-3d bg-indigo-600 border-2 border-indigo-400 flex items-center justify-center text-white text-3xl font-black">
+                        <div class="absolute inset-0 flex items-center justify-center backface-hidden">
+                            🤟
+                        </div>
+                        <div class="absolute inset-0 w-full h-full bg-white rounded-2xl flex flex-col items-center justify-center text-slate-800 rotate-y-180 backface-hidden p-2 text-center border-2 border-purple-300">
+                            ${card.type === 'pt' 
+                                ? `<span class="text-2xl">${card.emoji}</span><span class="text-xs font-black uppercase text-indigo-900">${card.content}</span>` 
+                                : `<span class="font-signwriting text-3xl text-purple-900">${card.content}</span><span class="text-[10px] text-slate-400 font-bold">SignWriting</span>`}
+                        </div>
+                    </div>
+                `;
+                cardEl.onclick = () => flipMemoryCard(idx);
+                grid.appendChild(cardEl);
+            });
+        }
+
+        function flipMemoryCard(index) {
+            if (flippedCards.length >= 2) return;
+            const inner = document.getElementById(`card-inner-${index}`);
+            if (inner.classList.contains('rotate-y-180')) return;
+
+            playSound('click');
+            inner.classList.add('rotate-y-180');
+            flippedCards.push({ index, data: memoryCards[index] });
+
+            if (flippedCards.length === 2) {
+                checkMemoryMatch();
+            }
+        }
+
+        function checkMemoryMatch() {
+            const [c1, c2] = flippedCards;
+
+            if (c1.data.matchId === c2.data.matchId && c1.data.type !== c2.data.type) {
+                playSound('correct');
+                addScore(20);
+                matchedPairs++;
+                flippedCards = [];
+
+                if (matchedPairs === memoryCards.length / 2) {
+                    setTimeout(() => {
+                        confetti({ particleCount: 100, spread: 100, origin: { y: 0.5 } });
+                    }, 400);
+                }
+            } else {
+                playSound('wrong');
+                setTimeout(() => {
+                    document.getElementById(`card-inner-${c1.index}`).classList.remove('rotate-y-180');
+                    document.getElementById(`card-inner-${c2.index}`).classList.remove('rotate-y-180');
+                    flippedCards = [];
+                }, 1000);
+            }
+        }
+
+        /* ==========================================================================
+           10. MODO 6: DICIONÁRIO & GERENCIADOR DE BANCO
+           ========================================================================== */
+        function renderDictionary() {
+            const grid = document.getElementById('alphabetGrid');
+            grid.innerHTML = '';
+
+            const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+
+            alphabet.forEach(letter => {
+                const card = document.createElement('div');
+                card.className = "card-bounce bg-slate-50 border-2 border-indigo-100 rounded-2xl p-3 flex flex-col items-center justify-center text-center cursor-pointer hover:border-amber-400 hover:bg-amber-50 transition";
+                card.innerHTML = `
+                    <span class="text-xs font-black text-indigo-400 mb-1">${letter}</span>
+                    <span class="font-signwriting text-3xl md:text-4xl text-indigo-950">${letter}</span>
+                `;
+                card.onclick = () => playSound('click');
+                grid.appendChild(card);
+            });
+        }
+
+        function renderWordList() {
+            const container = document.getElementById('wordListContainer');
+            container.innerHTML = '';
+
+            masterWordBank.forEach((item, idx) => {
+                const row = document.createElement('div');
+                row.className = "flex items-center justify-between p-2.5 bg-slate-50 rounded-xl border border-slate-200 text-xs font-bold";
+                row.innerHTML = `
+                    <div class="flex items-center gap-2">
+                        <span class="text-base">${item.emoji}</span>
+                        <span class="text-slate-700">${item.word}</span>
+                        <span class="text-[10px] uppercase px-1.5 py-0.5 rounded bg-slate-200 text-slate-600">${item.difficulty}</span>
+                    </div>
+                    <button onclick="removeWord(${idx})" class="text-rose-500 hover:text-rose-700 p-1">
+                        <i class="fa-solid fa-trash"></i>
+                    </button>
+                `;
+                container.appendChild(row);
+            });
+        }
+
+        function addNewWord(e) {
+            e.preventDefault();
+            const wordInput = document.getElementById('newWordInput');
+            const emojiInput = document.getElementById('newEmojiInput');
+
+            const word = wordInput.value.trim().toUpperCase();
+            const emoji = emojiInput.value.trim() || "📝";
+            const diff = word.length <= 4 ? "easy" : (word.length <= 6 ? "medium" : "hard");
+
+            if (word) {
+                masterWordBank.push({ word, emoji, difficulty: diff });
+                wordInput.value = '';
+                emojiInput.value = '';
+                renderWordList();
+                initAllModes();
+                playSound('correct');
+            }
+        }
+
+        function removeWord(index) {
+            if (masterWordBank.length <= 5) {
+                alert("O banco deve conter pelo menos 5 palavras!");
+                return;
+            }
+            masterWordBank.splice(index, 1);
+            renderWordList();
+            initAllModes();
+            playSound('click');
+        }
+    </script>
+</body>
+</html>
