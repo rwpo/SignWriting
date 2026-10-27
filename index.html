@@ -127,6 +127,12 @@
       <!-- Indicadores Globais & Nível -->
       <div class="flex items-center gap-3 bg-emerald-700/60 p-2 rounded-2xl border border-emerald-500/40">
         
+        <!-- Botão Tela Cheia para Projetor -->
+        <button onclick="toggleTelaCheia()" id="btn-tela-cheia" class="flex items-center gap-1.5 bg-emerald-800 hover:bg-emerald-900 px-3 py-1.5 rounded-xl text-xs font-bold text-yellow-300 transition-colors border border-emerald-500/50" title="Modo Projetor / Lousa">
+          <i class="fa-solid fa-expand" id="icon-tela-cheia"></i>
+          <span id="label-tela-cheia">Tela Cheia</span>
+        </button>
+
         <!-- Nível de Dificuldade -->
         <div class="flex items-center gap-1.5 bg-emerald-800/80 px-3 py-1.5 rounded-xl text-xs font-bold">
           <i class="fa-solid fa-layer-group text-yellow-300"></i>
@@ -515,8 +521,10 @@
 
   </main>
 
+  <!-- Rodapé com Créditos -->
   <footer class="bg-white border-t border-emerald-100 py-6 mt-12 text-center text-xs font-semibold text-slate-400">
     <div class="max-w-7xl mx-auto px-4 space-y-2">
+      <p class="text-sm font-bold text-emerald-800">Desenvolvido por Ricardo Wagner</p>
       <p>SignWriting na prática &copy; Sistema Educativo de Leitura e Escrita de Sinais para Surdos</p>
       <p class="text-slate-300">Fonte Sutton BR carregada diretamente do GitHub via CDN jsDelivr.</p>
     </div>
@@ -525,7 +533,7 @@
   <!-- SCRIPT DA APLICAÇÃO -->
   <script>
     /* ==========================================================================
-       BANCO DE DADOS 100% VISUAL E VERIFICADO (SEM ITENS GENÉRICOS)
+       1. BANCO DE DADOS 100% VISUAL E VERIFICADO
        ========================================================================== */
     const BANCO_PALAVRAS = [
       // Animais
@@ -670,6 +678,9 @@
       }
     ];
 
+    /* ==========================================================================
+       2. ESTADO GLOBAL E RECURSOS
+       ========================================================================== */
     let pontuacaoGlobal = 0;
     let nivelDificuldade = "medio";
     let indexFlashcardAtual = 0;
@@ -717,6 +728,44 @@
         }
       } catch (e) {
         console.warn('Áudio não suportado.', e);
+      }
+    }
+
+    /* Alterna o modo de Tela Cheia no navegador */
+    function toggleTelaCheia() {
+      tocarSom('clique');
+      const doc = window.document;
+      const docEl = doc.documentElement;
+
+      const requestFullscreen = docEl.requestFullscreen || docEl.mozRequestFullScreen || docEl.webkitRequestFontFace || docEl.msRequestFullscreen;
+      const cancelFullscreen = doc.exitFullscreen || doc.mozCancelFullScreen || doc.webkitExitFullscreen || doc.msExitFullscreen;
+
+      if (!doc.fullscreenElement && !doc.mozFullScreenElement && !doc.webkitFullscreenElement && !doc.msFullscreenElement) {
+        if (requestFullscreen) {
+          requestFullscreen.call(docEl);
+        }
+      } else {
+        if (cancelFullscreen) {
+          cancelFullscreen.call(doc);
+        }
+      }
+    }
+
+    // Monitora a mudança do modo tela cheia para atualizar o botão
+    document.addEventListener('fullscreenchange', atualizarIconeTelaCheia);
+    document.addEventListener('webkitfullscreenchange', atualizarIconeTelaCheia);
+
+    function atualizarIconeTelaCheia() {
+      const isFull = !!(document.fullscreenElement || document.webkitFullscreenElement);
+      const icon = document.getElementById('icon-tela-cheia');
+      const label = document.getElementById('label-tela-cheia');
+
+      if (isFull) {
+        icon.className = "fa-solid fa-compress";
+        label.textContent = "Sair da Tela Cheia";
+      } else {
+        icon.className = "fa-solid fa-expand";
+        label.textContent = "Tela Cheia";
       }
     }
 
@@ -878,12 +927,12 @@
     }
 
     /* ==========================================================================
-       MÓDULO: CAÇA-PALAVRAS COM VALIDAÇÃO E FEEDBACK VISUAL EM VERDE
+       3. MÓDULO: CAÇA-PALAVRAS COM FEEDBACK VERDE E VALIDAÇÃO DE RESPOSTAS
        ========================================================================== */
     let gridCacaPalavras = [];
     let palavrasCacaPalavras = [];
-    let selecaoAtual = []; // Guarda objetos {r, c, char}
-    let celulasEncontradas = new Set(); // Guarda "r,c" de palavras já achadas
+    let selecaoAtual = [];
+    let celulasEncontradas = new Set();
     let palavrasEncontradasQtd = 0;
 
     function gerarCacaPalavras() {
@@ -900,7 +949,6 @@
       celulasEncontradas.clear();
       palavrasEncontradasQtd = 0;
 
-      // Direções: Horizontal, Vertical, Diagonal Descendente
       const direcoes = [
         { dr: 0, dc: 1 },
         { dr: 1, dc: 0 },
@@ -955,7 +1003,6 @@
         }
       });
 
-      // Preenche lacunas com letras aleatórias
       const letras = "abcdefghijklmnopqrstuvwxyz";
       for (let r = 0; r < tamanho; r++) {
         for (let c = 0; c < tamanho; c++) {
@@ -1042,7 +1089,6 @@
           item.encontrada = true;
           palavrasEncontradasQtd++;
 
-          // Destacar células em verde permanente
           selecaoAtual.forEach(sel => {
             celulasEncontradas.add(`${sel.r},${sel.c}`);
             const celulaBtn = document.getElementById(`ws-cell-${sel.r}-${sel.c}`);
@@ -1055,7 +1101,6 @@
           selecaoAtual = [];
           adicionarPontos(20);
 
-          // Atualizar elemento na lista lateral
           const itemLi = document.getElementById(`ws-item-${idx}`);
           if (itemLi) {
             itemLi.className = "flex items-center justify-between p-2.5 rounded-xl font-bold text-sm transition-all border bg-emerald-100 border-emerald-300 text-emerald-800 line-through animate-pulse";
@@ -1099,6 +1144,9 @@
       document.getElementById('ws-progresso').textContent = `${palavrasEncontradasQtd} / ${palavrasCacaPalavras.length}`;
     }
 
+    /* ==========================================================================
+       4. OUTROS JOGOS E MODULOS
+       ========================================================================== */
     let quizPerguntas = [];
     let quizIndex = 0;
 
